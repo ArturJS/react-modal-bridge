@@ -9,6 +9,7 @@ import {
     pure,
     withHandlers,
     withStateHandlers,
+    setPropTypes,
     lifecycle
 } from 'recompact';
 import {
@@ -131,6 +132,13 @@ const enhance = compose(
             </div>
         )
     }),
+    setPropTypes({
+        modals: PropTypes.arrayOf(PropTypes.instanceOf(Modal).isRequired)
+            .isRequired,
+        dismiss: PropTypes.func.isRequired,
+        renderCustomType: PropTypes.func.isRequired,
+        renderStandardType: PropTypes.func.isRequired
+    }),
     pure
 );
 
@@ -196,11 +204,3 @@ export const ModalDialog = enhance(
         </>
     )
 );
-
-ModalDialog.propTypes = {
-    modals: PropTypes.arrayOf(PropTypes.instanceOf(Modal).isRequired)
-        .isRequired,
-    dismiss: PropTypes.func.isRequired,
-    renderCustomType: PropTypes.func.isRequired,
-    renderStandardType: PropTypes.func.isRequired
-};
