@@ -145,6 +145,27 @@ export class ModalService {
     };
   }
 
+  info({
+    title,
+    body,
+    className = '',
+    throwCancelError
+  }: TModalConfig): TModalResult {
+    const { result, close } = this._performOpen({
+      title,
+      body,
+      throwCancelError,
+      type: MODAL_TYPES.info,
+      className: `modal-info ${className}`,
+      noBackdrop: true
+    });
+
+    return {
+      result,
+      close
+    };
+  }
+
   error({
     title,
     body,
