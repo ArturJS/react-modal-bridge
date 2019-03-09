@@ -79,8 +79,8 @@ const enhance = compose(
             });
         },
         renderModalBody: () => (modal: Modal) => (
-            <>
-                {typeof modal.body === 'string'
+          <>
+            {typeof modal.body === 'string'
                     ? modal.body
                     : modal.body({
                           // eslint-disable-next-line flowtype/no-weak-types
@@ -91,7 +91,7 @@ const enhance = compose(
                               });
                           }
                       })}
-            </>
+          </>
         )
     }),
     withHandlers({
@@ -100,7 +100,7 @@ const enhance = compose(
         }: {
             renderModalBody: TRenderFn
         }) => (modal: Modal) => (
-            <div className="modal-custom-body">{renderModalBody(modal)}</div>
+          <div className="modal-custom-body">{renderModalBody(modal)}</div>
         ),
         renderStandardType: ({
             renderModalBody,
@@ -111,25 +111,27 @@ const enhance = compose(
             close: TClose,
             dismiss: TClose
         }) => (modal: Modal) => (
-            <div>
-                <div className="modal-body">{renderModalBody(modal)}</div>
-                <div className="modal-footer">
-                    <button
-                        className="btn btn-primary btn-ok"
-                        type="button"
-                        onClick={() => close(modal.id)}>
+          <div>
+            <div className="modal-body">{renderModalBody(modal)}</div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-primary btn-ok"
+                type="button"
+                onClick={() => close(modal.id)}
+              >
                         Ok
-                    </button>
-                    {modal.type === MODAL_TYPES.confirm && (
-                        <button
-                            className="btn btn-default btn-cancel"
-                            type="button"
-                            onClick={() => dismiss(modal.id)}>
+              </button>
+              {modal.type === MODAL_TYPES.confirm && (
+                <button
+                  className="btn btn-default btn-cancel"
+                  type="button"
+                  onClick={() => dismiss(modal.id)}
+                >
                             Cancel
-                        </button>
+                </button>
                     )}
-                </div>
             </div>
+          </div>
         )
     }),
     setPropTypes({
@@ -154,53 +156,56 @@ export const ModalDialog = enhance(
         renderCustomType: TRenderFn,
         renderStandardType: TRenderFn
     }) => (
-        <>
-            {modals.map(modal => (
-                <ReactModal
-                    key={modal.id}
-                    isOpen={modal.isOpen}
-                    onRequestClose={() => dismiss(modal.id)}
-                    style={
+      <>
+        {modals.map(modal => (
+          <ReactModal
+            key={modal.id}
+            isOpen={modal.isOpen}
+            onRequestClose={() => dismiss(modal.id)}
+            style={
                         modal.noBackdrop
                             ? noBackdropStyle
                             : defaultBackdropStyle
                     }
-                    className={`modal ${modal.className}`}
-                    shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
-                    closeTimeoutMS={CLOSE_DELAY_MS}
-                    contentLabel=""
-                    ariaHideApp={false}>
-                    <TransitionGroup>
-                        {modal.isOpen && (
-                            <CSSTransition
-                                key={modal.id}
-                                appear
-                                timeout={CLOSE_DELAY_MS}
-                                classNames="modal-show"
-                                mountOnEnter
-                                unmountOnExit>
-                                <div className="modal-content">
-                                    <button
-                                        type="button"
-                                        className="close"
-                                        onClick={() => dismiss(modal.id)}>
+            className={`modal ${modal.className}`}
+            shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
+            closeTimeoutMS={CLOSE_DELAY_MS}
+            contentLabel=""
+            ariaHideApp={false}
+          >
+            <TransitionGroup>
+              {modal.isOpen && (
+                <CSSTransition
+                  key={modal.id}
+                  appear
+                  timeout={CLOSE_DELAY_MS}
+                  classNames="modal-show"
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  <div className="modal-content">
+                    <button
+                      type="button"
+                      className="close"
+                      onClick={() => dismiss(modal.id)}
+                    >
                                         &times;
-                                    </button>
-                                    <div className="modal-header">
-                                        <h3 className="modal-title">
-                                            {modal.title}
-                                        </h3>
-                                    </div>
-                                    {modal.type === MODAL_TYPES.custom &&
+                    </button>
+                    <div className="modal-header">
+                      <h3 className="modal-title">
+                        {modal.title}
+                      </h3>
+                    </div>
+                    {modal.type === MODAL_TYPES.custom &&
                                         renderCustomType(modal)}
-                                    {modal.type !== MODAL_TYPES.custom &&
+                    {modal.type !== MODAL_TYPES.custom &&
                                         renderStandardType(modal)}
-                                </div>
-                            </CSSTransition>
+                  </div>
+                </CSSTransition>
                         )}
-                    </TransitionGroup>
-                </ReactModal>
+            </TransitionGroup>
+          </ReactModal>
             ))}
-        </>
+      </>
     )
 );
