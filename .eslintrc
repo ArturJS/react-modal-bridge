@@ -1,0 +1,29 @@
+{
+    "root": true,
+    "extends": [
+        "airbnb",
+        "airbnb-base",
+        "prettier",
+        "plugin:jest/recommended",
+        "plugin:flowtype/recommended"
+    ],
+    "plugins": ["flowtype", "jest", "import"],
+    "parser": "babel-eslint",
+    "rules": {
+        "flowtype/require-exact-type": [2, "always"],
+        "flowtype/no-weak-types": [
+            2,
+            {
+                "any": true,
+                "Object": true,
+                "Function": false
+            }
+        ],
+        "jsx-quotes": ["error", "prefer-double"]
+    },
+    "settings": {
+        "flowtype": {
+            "onlyFilesWithFlowAnnotation": true
+        }
+    }
+}
