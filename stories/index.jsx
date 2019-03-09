@@ -13,17 +13,17 @@ storiesOf('ModalDialog', module).add('confirm', () => (
   <>
     <Button
       onClick={() => {
-                modal
-                    .confirm({
-                        title: 'Title',
-                        body: 'Modal content...',
-                        throwCancelError: true
-                    })
-                    .result.then(action('close'))
-                    .catch(action('dismiss'));
-            }}
+        modal
+          .confirm({
+            title: 'Title',
+            body: 'Modal content...',
+            throwCancelError: true
+          })
+          .result.then(action('close'))
+          .catch(action('dismiss'));
+      }}
     >
-            Open modal
+      Open modal
     </Button>
     <ModalDialog />
   </>
