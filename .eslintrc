@@ -1,0 +1,44 @@
+{
+    "root": true,
+    "extends": [
+        "airbnb",
+        "airbnb-base",
+        "prettier",
+        "plugin:jest/recommended",
+        "plugin:flowtype/recommended"
+    ],
+    "plugins": ["flowtype", "jest", "import"],
+    "parser": "babel-eslint",
+    "rules": {
+        "flowtype/require-exact-type": [2, "always"],
+        "flowtype/no-weak-types": [
+            2,
+            {
+                "any": true,
+                "Object": true,
+                "Function": false
+            }
+        ],
+        "jsx-quotes": ["error", "prefer-double"],
+        "no-underscore-dangle": [
+            "error",
+            {
+                "allowAfterThis": true
+            }
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": true,
+                "optionalDependencies": false,
+                "peerDependencies": false
+            }
+        ],
+        "import/prefer-default-export": 0
+    },
+    "settings": {
+        "flowtype": {
+            "onlyFilesWithFlowAnnotation": true
+        }
+    }
+}
