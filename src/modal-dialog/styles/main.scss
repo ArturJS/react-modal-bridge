@@ -7,7 +7,13 @@
     $c-modal-text: $c-mine-shaft;
     $c-close-hover: $c-lynch;
 
+
+    font-family: sans-serif;
     outline: 0;
+
+    * {
+      font-family: inherit;
+    }
 
     .modal-content {
         position: relative; // to position close button

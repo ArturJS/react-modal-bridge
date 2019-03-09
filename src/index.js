@@ -1,2 +1,2 @@
-export { ModalDialog } from './modal-dialog';
+export { ModalDialog as ReactModalBridge } from './modal-dialog';
 export { modalService as modal } from './modal.service';
