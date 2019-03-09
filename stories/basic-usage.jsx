@@ -24,6 +24,24 @@ storiesOf('Basic usage', module)
       <ReactModalBridge />
     </>
   ))
+  .add('info', () => (
+    <>
+      Note: info modal by default do not have backdrop.
+      <Button
+        onClick={() => {
+          modal
+            .info({
+              title: 'Info ',
+              body: 'Some useful information...'
+            })
+            .result.then(action('close'));
+        }}
+      >
+        Open info modal
+      </Button>
+      <ReactModalBridge />
+    </>
+  ))
   .add('error', () => (
     <>
       Note: error modal by default do not have backdrop.
