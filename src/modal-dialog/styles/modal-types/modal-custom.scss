@@ -1,0 +1,17 @@
+@import "../utils/index";
+
+.modal-custom {
+  max-height: 100%; // necessary for IE11
+
+  @media (max-width: $tablet-width) {
+    width: 100%;
+  }
+
+  .buttons-group {
+
+    .btn {
+      width: 100%;
+      margin: 5px 0;
+    }
+  }
+}

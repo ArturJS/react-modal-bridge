@@ -1,0 +1,19 @@
+@import "../utils/index";
+
+.modal-error {
+
+  .modal-title {
+    margin-bottom: 15px;
+    color: $c-white;
+  }
+
+  .modal-content {
+    background: $c-bittersweet;
+    color: $c-white;
+    padding: 15px;
+  }
+
+  .modal-body {
+    padding: 0;
+  }
+}
