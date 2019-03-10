@@ -1,13 +1,13 @@
 @import "../utils/index";
 
-.modal-info {
+.rmb-modal-info {
   font-size: 16px;
 
   @media (min-width: $tablet-width) {
     max-width: 450px;
   }
 
-  .modal-body {
+  .rmb-modal-body {
     max-width: 400px;
     text-align: center;
   }

@@ -1,19 +1,19 @@
 @import "../utils/index";
 
-.modal-error {
+.rmb-modal-error {
 
-  .modal-title {
+  .rmb-modal-title {
     margin-bottom: 15px;
     color: $c-white;
   }
 
-  .modal-content {
-    background: $c-bittersweet;
+  .rmb-modal-content {
+    background-color: $c-bittersweet;
     color: $c-white;
     padding: 15px;
   }
 
-  .modal-body {
+  .rmb-modal-body {
     padding: 0;
   }
 }

@@ -1,10 +1,6 @@
 @import "./utils/index";
 
-a.btn {
-  text-decoration: none;
-}
-
-.btn {
+.rmb-btn {
   $c-btn-text: $c-biscay;
   $c-btn-primary-text: $c-desert-storm;
 
@@ -114,7 +110,7 @@ a.btn {
   }
 }
 
-.buttons-group {
+.rmb-buttons-group {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
