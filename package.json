@@ -72,6 +72,7 @@
         "prettier": "^1.16.4",
         "prop-types": "^15.7.2",
         "sass-loader": "^7.1.0",
+        "string-replace-loader": "^2.1.1",
         "stylelint": "^9.10.1",
         "stylelint-config-airbnb": "^0.0.0",
         "stylelint-order": "^2.1.0",
