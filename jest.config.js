@@ -5,6 +5,7 @@ module.exports = {
     '!src/**/*index.{js,jsx}'
   ],
   setupFiles: ['<rootDir>/scripts/tools/jest/__mocks__/browser-mocks.js'],
+  setupFilesAfterEnv: ['<rootDir>/scripts/tools/jest/jest-setup.js'],
   testURL: 'http://localhost:8281',
   transform: {
     '\\.jsx?$': 'babel-jest',
