@@ -89,6 +89,7 @@
     "*.{js,jsx}": [
       "prettier --write",
       "eslint --fix",
+      "jest --bail --findRelatedTests --env=jsdom",
       "git add"
     ],
     "src/**/*.scss": [
