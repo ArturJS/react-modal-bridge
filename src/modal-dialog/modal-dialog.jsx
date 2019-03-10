@@ -97,7 +97,7 @@ const enhance = compose(
   withHandlers({
     renderCustomType: ({ renderModalBody }: { renderModalBody: TRenderFn }) => (
       modal: Modal
-    ) => <div className="modal-custom-body">{renderModalBody(modal)}</div>,
+    ) => <div className="rmb-modal-custom-body">{renderModalBody(modal)}</div>,
     renderStandardType: ({
       renderModalBody,
       close,
@@ -108,10 +108,10 @@ const enhance = compose(
       dismiss: TClose
     }) => (modal: Modal) => (
       <div>
-        <div className="modal-body">{renderModalBody(modal)}</div>
-        <div className="modal-footer">
+        <div className="rmb-modal-body">{renderModalBody(modal)}</div>
+        <div className="rmb-modal-footer">
           <button
-            className="btn btn-primary btn-ok"
+            className="rmb-btn rmb-btn-primary rmb-btn-ok"
             type="button"
             onClick={() => close(modal.id)}
           >
@@ -119,7 +119,7 @@ const enhance = compose(
           </button>
           {modal.type === MODAL_TYPES.confirm && (
             <button
-              className="btn btn-default btn-cancel"
+              className="rmb-btn rmb-btn-default rmb-btn-cancel"
               type="button"
               onClick={() => dismiss(modal.id)}
             >
@@ -159,7 +159,7 @@ export const ModalDialog = enhance(
           isOpen={modal.isOpen}
           onRequestClose={() => dismiss(modal.id)}
           style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
-          className={`modal ${modal.className}`}
+          className={`rmb-modal ${modal.className}`}
           shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
           closeTimeoutMS={CLOSE_DELAY_MS}
           contentLabel=""
@@ -171,20 +171,20 @@ export const ModalDialog = enhance(
                 key={modal.id}
                 appear
                 timeout={CLOSE_DELAY_MS}
-                classNames="modal-show"
+                classNames="rmb-modal-show"
                 mountOnEnter
                 unmountOnExit
               >
-                <div className="modal-content">
+                <div className="rmb-modal-content">
                   <button
                     type="button"
-                    className="close"
+                    className="rmb-close"
                     onClick={() => dismiss(modal.id)}
                   >
                     &times;
                   </button>
-                  <div className="modal-header">
-                    <h3 className="modal-title">{modal.title}</h3>
+                  <div className="rmb-modal-header">
+                    <h3 className="rmb-modal-title">{modal.title}</h3>
                   </div>
                   {modal.type === MODAL_TYPES.custom && renderCustomType(modal)}
                   {modal.type !== MODAL_TYPES.custom &&

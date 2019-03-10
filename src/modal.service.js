@@ -156,7 +156,7 @@ export class ModalService {
       body,
       throwCancelError,
       type: MODAL_TYPES.info,
-      className: `modal-info ${className}`,
+      className: `rmb-modal-info ${className}`,
       noBackdrop: true
     });
 
@@ -177,7 +177,7 @@ export class ModalService {
       body,
       throwCancelError,
       type: MODAL_TYPES.error,
-      className: `modal-error ${className}`,
+      className: `rmb-modal-error ${className}`,
       noBackdrop: true
     });
 
