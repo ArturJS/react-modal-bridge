@@ -82,6 +82,10 @@
             "prettier --write",
             "eslint --fix",
             "git add"
+        ],
+        "src/**/*.scss": [
+            "stylelint --fix",
+            "git add"
         ]
     },
     "husky": {
