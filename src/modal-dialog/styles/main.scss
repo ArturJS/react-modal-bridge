@@ -118,7 +118,7 @@
   }
 }
 
-.ReactModal__Overlay {
+.rmb-overlay {
   z-index: 999;
   overflow-y: auto;
   display: flex;
@@ -141,6 +141,6 @@
   }
 }
 
-.ReactModal__Body--open {
+.rmb-body--open {
   overflow-y: hidden;
 }
