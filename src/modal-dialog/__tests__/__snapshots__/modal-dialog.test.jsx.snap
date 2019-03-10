@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ModalDialog /> type \`info\` should match snapshot 1`] = `
+<div
+  className="react-modal-mock"
+>
+  <pre
+    className="props"
+  >
+    {
+  "isOpen": true,
+  "style": {
+    "overlay": {
+      "backgroundColor": "transparent",
+      "pointerEvents": "none",
+      "zIndex": 1080
+    }
+  },
+  "className": "rmb-modal rmb-modal-info ",
+  "shouldCloseOnOverlayClick": true,
+  "closeTimeoutMS": 300,
+  "contentLabel": "",
+  "ariaHideApp": false
+}
+  </pre>
+  <div
+    className="TransitionGroup-mock"
+  >
+    <pre
+      className="props"
+    >
+      {}
+    </pre>
+    <div
+      className="CSSTransition-mock"
+    >
+      <pre
+        className="props"
+      >
+        {
+  "appear": true,
+  "timeout": 300,
+  "classNames": "rmb-modal-show",
+  "mountOnEnter": true,
+  "unmountOnExit": true
+}
+      </pre>
+      <div
+        className="rmb-modal-content"
+      >
+        <button
+          className="rmb-close"
+          onClick={[Function]}
+          type="button"
+        >
+          ×
+        </button>
+        <div
+          className="rmb-modal-header"
+        >
+          <h3
+            className="rmb-modal-title"
+          >
+            Info title
+          </h3>
+        </div>
+        <div>
+          <div
+            className="rmb-modal-body"
+          >
+            Info body
+          </div>
+          <div
+            className="rmb-modal-footer"
+          >
+            <button
+              className="rmb-btn rmb-btn-primary rmb-btn-ok"
+              onClick={[Function]}
+              type="button"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
