@@ -72,7 +72,6 @@ const enhance = compose(
         id
       });
     },
-
     dismiss: () => (id: number) => {
       modalService.dismiss({
         id
