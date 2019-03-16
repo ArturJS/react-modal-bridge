@@ -5,6 +5,10 @@ node_js:
 cache:
   directories:
     - node_modules
+env:
+  global:
+    - secure: 'Aow1qfpzbu1u9e5e3M/zd/HnBTfhXYYDAosAVuV+uasubLCLjG5o5Y2x3F6G+mkIewKg+kTXif3T0BhW+FvmuNwhe3gOCkT6NgYaRxSUDkjjm8W4YGQcxKg/SGPjvHoZgJOauogRWe3Ognjs/c7w40NdSy5gb4RnyQZDjAe046h+S+xKH9pXZQQzYKIfZX09gW14x0y1erPEw+cAP6aSMcg1ep5SuV5FqPqrqR80zaB81pYzZ0m073LL7zOjY6Ww5mDn49p1Tmdr8hGwarWy62aLjtOoVwHD5L6+WaZnRoHRzJJmZK5h9EEebJO1dH5EwHOkOz8AlhjIPjLdfjPvNMyd77uQ0i3UlatVTugTNsy0Ht2VIGR+LmpGJYOozqVQX3NfquP0SHaZSfGTHTAqm7AQO7nlq+shsMjGzm8+AMB6zttol7Q4mv0ayurXwWkgurmUhNTIMwowihU8kBiKduFZQkgQQFn4GwjYY+Utm0gbMGm5Kp8FSIFebEXSXvMjbdptSQQViwY5oTZNXpJhDeJLZX6QQEV5iZWXIZ4a/r3nDSUOHf1NnZ23xo2WsNlYWI8mv1A1P4ElK7yttEZMHjEHmRHTHispOc+2lDg8aiFTruQFPkX6Kcj9g3qDa9y6dqPmJlrqq5mObZYT76tMhzYUUxXpvNipAqTwmuZ0tP0='
+    - secure: '2f3Q9+iZBTDEiEKPhrSgwDbY8/cTpvZDGxPGrNebNcwZv+pa8AOUlya3UU/tpWo1zXoCilQopf42pIgPOTdZL/ZOtul5xQZnP7n/S8DVWKPPPzZ/oSs1E2i3lwldhTVO2otwBZ/Gy8NilyHmQQu/MG9qWn6JvSWyR2SVoLJuU1HNJEBIKUsBCf2T8nttBvQ7gZnqtrglKyZ+4YA2AQWI2fA7K40D1nMvONJrmi9i2C2G1g3FKBr4OUhLpUUnMJFYIRCT2CG0qEu/teurLxpZiuU009BO1nDO/8cuVadxBETh/l8oWg0wP99u44/LTfB1iPRIavypldkX0yrv390bI4q1T8kSkwrhhQLHR9N7VO479lA/6OGHBgHF8f9U0eMyWR5q4xckt17ZrZiYPYOQMSRDEcODp2LXBVt6HenH/8nc8jxy53jcDFiA6flaatNS2+7NHhGfx60amgsTFYtA4mECkotcWwvkNGk+nsNVcFWwtO8VW70F1IQRPLm0WP5X3xEcDCqt+iA2Xa642ctzrJUnYukKUzZBuUsLxRLmMZhRGzMib8f95z2MPfJyFMz3ixIku9K1s0n3X/3bFK8PhNbS8u+5L9zLmDQfqFb2zWv/uqn5Zuvm3+AnEJQXQjDxz1W+qs+0BGhaiXEvTYAe3SN79UJ7Qo4YsVUf/++fI1o='
 jobs:
   include:
     - stage: lint
@@ -12,3 +16,6 @@ jobs:
 
     - stage: unit-test
       script: npm run test
+
+    - stage: e2e-tests
+      script: npm run e2e
