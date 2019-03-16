@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+/* eslint-disable import/no-unresolved */
 const Nightwatch = require('nightwatch');
 const browserstack = require('browserstack-local');
+/* eslint-enable import/no-unresolved */
 
 let bsLocal;
 
