@@ -1,6 +1,4 @@
-const browserstack = require('browserstack-local');
-
-nightwatch_config = {
+const nightwatchConfig = {
   src_folders: ['tests/local'],
 
   selenium: {
@@ -40,15 +38,18 @@ nightwatch_config = {
 };
 
 // Code to support common capabilites
-for (const i in nightwatch_config.test_settings) {
-  const config = nightwatch_config.test_settings[i];
-  config.selenium_host = nightwatch_config.selenium.host;
-  config.selenium_port = nightwatch_config.selenium.port;
+/* eslint-disable no-param-reassign */
+Object.values(nightwatchConfig.test_settings).forEach(config => {
+  config.selenium_host = nightwatchConfig.selenium.host;
+  config.selenium_port = nightwatchConfig.selenium.port;
   config.desiredCapabilities = config.desiredCapabilities || {};
-  for (const j in nightwatch_config.common_capabilities) {
-    config.desiredCapabilities[j] =
-      config.desiredCapabilities[j] || nightwatch_config.common_capabilities[j];
-  }
-}
 
-module.exports = nightwatch_config;
+  Object.keys(nightwatchConfig.common_capabilities).forEach(key => {
+    config.desiredCapabilities[key] =
+      config.desiredCapabilities[key] ||
+      nightwatchConfig.common_capabilities[key];
+  });
+});
+/* eslint-enable no-param-reassign */
+
+module.exports = nightwatchConfig;

@@ -1,5 +1,5 @@
 module.exports = {
-  "Google's Search Functionality": function(browser) {
+  "Google's Search Functionality": browser => {
     browser
       .url('https://www.google.com/ncr')
       .waitForElementVisible('body', 1000)

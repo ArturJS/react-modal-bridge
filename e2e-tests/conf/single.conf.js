@@ -1,4 +1,4 @@
-nightwatch_config = {
+const nightwatchConfig = {
   src_folders: ['tests/single'],
 
   selenium: {
@@ -23,10 +23,11 @@ nightwatch_config = {
 };
 
 // Code to copy seleniumhost/port into test settings
-for (const i in nightwatch_config.test_settings) {
-  const config = nightwatch_config.test_settings[i];
-  config.selenium_host = nightwatch_config.selenium.host;
-  config.selenium_port = nightwatch_config.selenium.port;
-}
+/* eslint-disable no-param-reassign */
+Object.values(nightwatchConfig.test_settings).forEach(config => {
+  config.selenium_host = nightwatchConfig.selenium.host;
+  config.selenium_port = nightwatchConfig.selenium.port;
+});
+/* eslint-enable no-param-reassign */
 
-module.exports = nightwatch_config;
+module.exports = nightwatchConfig;
