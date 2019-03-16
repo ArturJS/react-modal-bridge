@@ -11,4 +11,3 @@ COPY --chown=node:node ./package.json .
 COPY --chown=node:node ./yarn.lock .
 RUN yarn --frozen-lockfile
 COPY --chown=node:node ./ ./
-ENTRYPOINT [ "npm", "start" ]

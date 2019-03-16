@@ -15,7 +15,8 @@
   "repository": "https://github.com/browserstack/nightwatch-browserstack",
   "dependencies": {
     "browserstack-local": "^1.0.0",
-    "nightwatch": "^0.8.18"
+    "nightwatch": "^0.8.18",
+    "wait-on": "^3.2.0"
   },
   "license": "MIT",
   "main": "index.js",
