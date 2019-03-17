@@ -16,6 +16,7 @@ services:
     environment:
       - BROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME}
       - BROWSERSTACK_ACCESS_KEY=${BROWSERSTACK_ACCESS_KEY}
+      - LAUCH_URL=http://react-modal-bridge:8080
     command: bash -c '
       npx wait-on http://react-modal-bridge:8080 -t 30000 &&
       npm start'

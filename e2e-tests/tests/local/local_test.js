@@ -1,9 +1,9 @@
 module.exports = {
   'BrowserStack Local Testing': browser => {
     browser
-      .url('http://bs-local.com:45691/check')
+      .url(browser.launchUrl)
       .waitForElementVisible('body', 1000)
-      .assert.containsText('body', 'Up and running')
+      .assert.containsText('body', 'Storybook')
       .end();
   }
 };

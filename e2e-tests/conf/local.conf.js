@@ -18,7 +18,8 @@ const nightwatchConfig = {
         'browserstack.debug': true,
         'browserstack.local': true,
         browser: 'chrome'
-      }
+      },
+      launch_url: process.env.LAUCH_URL
     }
   }
 };
