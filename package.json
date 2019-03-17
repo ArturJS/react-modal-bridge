@@ -4,6 +4,8 @@
   "description": "The bridge between lawless react-modal and strict opinionated modal API",
   "main": "index.js",
   "scripts": {
+    "e2e": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
+    "docker-rebuild-e2e-tests": "docker-compose --file docker-compose.e2e.yml up --no-deps --build e2e-tests",
     "lint": "npm run lint-js && npm run lint-scss",
     "lint-fix": "npm run lint-js -- --fix && npm run lint-scss -- --fix",
     "lint-js": "eslint --ext .js,.jsx --ignore-path .gitignore .",

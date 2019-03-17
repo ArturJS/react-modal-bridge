@@ -1,0 +1,32 @@
+version: '3'
+services:
+  react-modal-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      internal-network:
+        aliases:
+          - react-modal-bridge
+
+  e2e-tests:
+    build:
+      context: ./e2e-tests
+      dockerfile: Dockerfile
+    environment:
+      - BROWSERSTACK_USERNAME=${BROWSERSTACK_USERNAME}
+      - BROWSERSTACK_ACCESS_KEY=${BROWSERSTACK_ACCESS_KEY}
+      - LAUCH_URL=http://react-modal-bridge:8080
+    command: bash -c '
+      npx wait-on http://react-modal-bridge:8080 -t 30000 &&
+      npm start'
+    networks:
+      internal-network:
+        aliases:
+          - e2e-tests
+    depends_on:
+      - react-modal-bridge
+
+networks:
+  internal-network:
+    driver: bridge
