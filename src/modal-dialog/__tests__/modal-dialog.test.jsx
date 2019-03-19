@@ -177,4 +177,66 @@ describe('<ModalDialog />', () => {
       expect(isDismissed).toBe(true);
     });
   });
+
+  describe('type `error`', () => {
+    afterEach(async () => {
+      await modalService.closeAll();
+    });
+
+    it('should match snapshot', () => {
+      modalService.error({ title: 'Error title', body: 'Error body' });
+
+      const tree = renderer.create(<ModalDialog />).toJSON();
+
+      expect(tree).toMatchSnapshot();
+    });
+
+    it('should contain modal content', () => {
+      modalService.error({ title: 'Error title', body: 'Error body' });
+
+      const wrapper = mount(<ModalDialog />);
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
+    });
+
+    it('should be closed', async () => {
+      let isClosed = false;
+
+      modalService
+        .error({ title: 'Error title', body: 'Error body' })
+        .result.then(() => {
+          isClosed = true;
+        });
+
+      const wrapper = mount(<ModalDialog />);
+
+      wrapper.find('.rmb-btn-ok').simulate('click');
+      await flushPromises();
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
+      expect(isClosed).toBe(true);
+    });
+
+    it('should be dismissed', async () => {
+      let isDismissed = false;
+
+      modalService
+        .error({
+          title: 'Error title',
+          body: 'Error body',
+          throwCancelError: true
+        })
+        .result.catch(() => {
+          isDismissed = true;
+        });
+
+      const wrapper = mount(<ModalDialog />);
+
+      wrapper.find('.rmb-close').simulate('click');
+      await flushPromises();
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
+      expect(isDismissed).toBe(true);
+    });
+  });
 });
