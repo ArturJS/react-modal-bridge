@@ -165,7 +165,7 @@ exports[`<ModalDialog /> type \`custom\` should match snapshot 1`] = `
               className="props-for-custom-component"
             >
               {
-  "closeModal": "function closeModal(reason) {\\n          _modal.modalService.close({\\n            id: modal.id,\\n            reason: reason\\n          });\\n        }"
+  "closeModal": "function closeModal(){...}"
 }
             </div>
             <button

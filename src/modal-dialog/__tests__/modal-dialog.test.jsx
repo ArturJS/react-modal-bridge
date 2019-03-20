@@ -251,7 +251,7 @@ describe('<ModalDialog />', () => {
                 props,
                 (key, value) => {
                   if (typeof value === 'function') {
-                    return value.toString();
+                    return `function ${key}(){...}`;
                   }
 
                   return value;
