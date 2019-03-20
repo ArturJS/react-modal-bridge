@@ -93,6 +93,96 @@ exports[`<ModalDialog /> type \`confirm\` should match snapshot 1`] = `
 </div>
 `;
 
+exports[`<ModalDialog /> type \`custom\` should match snapshot 1`] = `
+<div
+  className="react-modal-mock"
+>
+  <pre
+    className="props"
+  >
+    {
+  "isOpen": true,
+  "style": {
+    "overlay": {
+      "backgroundColor": ""
+    }
+  },
+  "className": "rmb-modal ",
+  "shouldCloseOnOverlayClick": true,
+  "closeTimeoutMS": 300,
+  "contentLabel": "",
+  "ariaHideApp": false
+}
+  </pre>
+  <div
+    className="TransitionGroup-mock"
+  >
+    <pre
+      className="props"
+    >
+      {}
+    </pre>
+    <div
+      className="CSSTransition-mock"
+    >
+      <pre
+        className="props"
+      >
+        {
+  "appear": true,
+  "timeout": 300,
+  "classNames": "rmb-modal-show",
+  "mountOnEnter": true,
+  "unmountOnExit": true
+}
+      </pre>
+      <div
+        className="rmb-modal-content"
+      >
+        <button
+          className="rmb-close"
+          onClick={[Function]}
+          type="button"
+        >
+          ×
+        </button>
+        <div
+          className="rmb-modal-header"
+        >
+          <h3
+            className="rmb-modal-title"
+          >
+            Custom title
+          </h3>
+        </div>
+        <div
+          className="rmb-modal-custom-body"
+        >
+          <div
+            className="custom-body"
+          >
+            <div
+              className="props-for-custom-component"
+            >
+              {
+  "closeModal": "function closeModal(reason) {\\n          _modal.modalService.close({\\n            id: modal.id,\\n            reason: reason\\n          });\\n        }"
+}
+            </div>
+            <button
+              className="btn-close"
+              onClick={[Function]}
+              type="button"
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`<ModalDialog /> type \`error\` should match snapshot 1`] = `
 <div
   className="react-modal-mock"

@@ -239,4 +239,90 @@ describe('<ModalDialog />', () => {
       expect(isDismissed).toBe(true);
     });
   });
+
+  describe('type `custom`', () => {
+    const openCustomModal = (additionalParams = {}) => {
+      return modalService.custom({
+        title: 'Custom title',
+        body: props => (
+          <div className="custom-body">
+            <div className="props-for-custom-component">
+              {JSON.stringify(
+                props,
+                (key, value) => {
+                  if (typeof value === 'function') {
+                    return value.toString();
+                  }
+
+                  return value;
+                },
+                2
+              )}
+            </div>
+            <button
+              type="button"
+              className="btn-close"
+              // eslint-disable-next-line react/prop-types, react/destructuring-assignment
+              onClick={props.closeModal}
+            >
+              Close Modal
+            </button>
+          </div>
+        ),
+        ...additionalParams
+      });
+    };
+
+    afterEach(async () => {
+      await modalService.closeAll();
+    });
+
+    it('should match snapshot', () => {
+      openCustomModal();
+
+      const tree = renderer.create(<ModalDialog />).toJSON();
+
+      expect(tree).toMatchSnapshot();
+    });
+
+    it('should contain modal content', () => {
+      modalService.confirm({ title: 'Confirm title', body: 'Confirm body' });
+
+      const wrapper = mount(<ModalDialog />);
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
+    });
+
+    it('should be closed', async () => {
+      let isClosed = false;
+
+      openCustomModal().result.then(() => {
+        isClosed = true;
+      });
+
+      const wrapper = mount(<ModalDialog />);
+
+      wrapper.find('.btn-close').simulate('click');
+      await flushPromises();
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
+      expect(isClosed).toBe(true);
+    });
+
+    it('should be dismissed by clicking [X] button', async () => {
+      let isDismissed = false;
+
+      openCustomModal({ throwCancelError: true }).result.catch(() => {
+        isDismissed = true;
+      });
+
+      const wrapper = mount(<ModalDialog />);
+
+      wrapper.find('.rmb-close').simulate('click');
+      await flushPromises();
+
+      expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
+      expect(isDismissed).toBe(true);
+    });
+  });
 });
