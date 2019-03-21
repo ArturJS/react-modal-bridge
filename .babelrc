@@ -11,7 +11,7 @@
   ],
   "plugins": [
     ["lodash", { "id": "recompact" }],
-    "@babel/plugin-transform-runtime",
+    "transform-async-to-promises",
     "@babel/plugin-transform-react-display-name",
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
