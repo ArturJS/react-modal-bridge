@@ -31,7 +31,7 @@
       {
         "devDependencies": true,
         "optionalDependencies": false,
-        "peerDependencies": false
+        "peerDependencies": true
       }
     ],
     "import/prefer-default-export": 0
