@@ -1,5 +1,7 @@
 const path = require('path');
-const { ruleToRenameReactModalClassNames } = require('./shared');
+const {
+  ruleToRenameReactModalClassNames
+} = require('../scripts/tools/webpack/shared');
 
 module.exports = {
   module: {
