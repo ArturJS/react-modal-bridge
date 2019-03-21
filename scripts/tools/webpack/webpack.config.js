@@ -1,26 +1,34 @@
 const path = require('path');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const baseWebpackConfig = require('./.storybook/webpack.config');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { ruleToRenameReactModalClassNames } = require('./shared');
 
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, '../../../build'),
     filename: 'index.js',
     libraryTarget: 'umd'
   },
-  devtool: 'cheap-source-map',
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        include: [path.resolve(__dirname, 'src'), /node_modules\/react-modal/],
+        include: [
+          path.resolve(__dirname, '../../../src'),
+          /node_modules\/react-modal/
+        ],
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
         }
       },
-      ...baseWebpackConfig.module.rules
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      },
+      ruleToRenameReactModalClassNames
     ]
   },
   externals: {
@@ -32,6 +40,10 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       reportFilename: 'webpack-bundle-report.html'
-    })
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'react-modal-bridge.css'
+    }),
+    new OptimizeCSSAssetsPlugin({})
   ]
 };
