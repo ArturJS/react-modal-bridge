@@ -34,8 +34,6 @@
   },
   "homepage": "https://github.com/ArturJS/react-modal-bridge#readme",
   "dependencies": {
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
     "react-modal": "^3.8.1",
     "react-transition-group": "^2.6.0",
     "recompact": "^3.4.0"
@@ -111,5 +109,9 @@
       "post-commit": "git update-index --again",
       "pre-commit": "npm run lint-staged"
     }
+  },
+  "peerDependencies": {
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }
