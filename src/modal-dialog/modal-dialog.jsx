@@ -1,29 +1,15 @@
 // @flow
-import type { Element } from 'react';
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { memo, useState, useEffect } from 'react';
 import ReactModal from 'react-modal';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import {
-  compose,
-  pure,
-  withHandlers,
-  withStateHandlers,
-  setPropTypes,
-  lifecycle
-} from 'recompact';
 import {
   MODAL_TYPES,
   CLOSE_DELAY_MS,
   Modal,
   modalService
 } from '../modal.service';
+import { CustomType, StandardType } from './components';
 import './styles';
-
-// eslint-disable-next-line flowtype/no-weak-types
-type TRenderFn = (modal: Modal) => Element<any>;
-
-type TClose = (id: number) => void;
 
 const defaultBackdropStyle = {
   overlay: {
@@ -39,118 +25,26 @@ const noBackdropStyle = {
   }
 };
 
-const withModalsSubscription = compose(
-  withStateHandlers(
-    {
-      modals: []
-    },
-    {
-      setModals: () => (modals: Array<Modal>) => ({ modals })
-    }
-  ),
-  lifecycle({
-    componentDidMount() {
-      this.unlisten = modalService.subscribe(({ modals }) => {
-        const {
-          setModals
-        }: { setModals: (modals: Array<Modal>) => void } = this.props;
+export const ModalDialog = memo(() => {
+  const dismiss = (id: number) => {
+    modalService.dismiss({
+      id
+    });
+  };
+  const [modals, setModals] = useState([]);
 
+  useEffect(() => {
+    const unsubscribe = modalService.subscribe(
+      // eslint-disable-next-line no-shadow
+      ({ modals }: {| modals: Array<Modal> |}) => {
         setModals(modals);
-      });
-    },
-    componentWillUnmount() {
-      this.unlisten();
-    }
-  })
-);
+      }
+    );
 
-const enhance = compose(
-  withModalsSubscription,
-  withHandlers({
-    close: () => (id: number) => {
-      modalService.close({
-        id
-      });
-    },
-    dismiss: () => (id: number) => {
-      modalService.dismiss({
-        id
-      });
-    },
-    renderModalBody: () => (modal: Modal) => (
-      <>
-        {typeof modal.body === 'string'
-          ? modal.body
-          : modal.body({
-              // eslint-disable-next-line flowtype/no-weak-types
-              closeModal: (reason?: mixed) => {
-                modalService.close({
-                  id: modal.id,
-                  reason
-                });
-              }
-            })}
-      </>
-    )
-  }),
-  withHandlers({
-    renderCustomType: ({ renderModalBody }: { renderModalBody: TRenderFn }) => (
-      modal: Modal
-    ) => <div className="rmb-modal-custom-body">{renderModalBody(modal)}</div>,
-    renderStandardType: ({
-      renderModalBody,
-      close,
-      dismiss
-    }: {
-      renderModalBody: TRenderFn,
-      close: TClose,
-      dismiss: TClose
-    }) => (modal: Modal) => (
-      <div>
-        <div className="rmb-modal-body">{renderModalBody(modal)}</div>
-        <div className="rmb-modal-footer">
-          <button
-            className="rmb-btn rmb-btn-primary rmb-btn-ok"
-            type="button"
-            onClick={() => close(modal.id)}
-          >
-            Ok
-          </button>
-          {modal.type === MODAL_TYPES.confirm && (
-            <button
-              className="rmb-btn rmb-btn-default rmb-btn-cancel"
-              type="button"
-              onClick={() => dismiss(modal.id)}
-            >
-              Cancel
-            </button>
-          )}
-        </div>
-      </div>
-    )
-  }),
-  setPropTypes({
-    modals: PropTypes.arrayOf(PropTypes.instanceOf(Modal).isRequired)
-      .isRequired,
-    dismiss: PropTypes.func.isRequired,
-    renderCustomType: PropTypes.func.isRequired,
-    renderStandardType: PropTypes.func.isRequired
-  }),
-  pure
-);
+    return unsubscribe;
+  });
 
-export const ModalDialog = enhance(
-  ({
-    modals,
-    dismiss,
-    renderCustomType,
-    renderStandardType
-  }: {
-    modals: Array<Modal>,
-    dismiss: TClose,
-    renderCustomType: TRenderFn,
-    renderStandardType: TRenderFn
-  }) => (
+  return (
     <>
       {modals.map(modal => (
         <ReactModal
@@ -185,9 +79,12 @@ export const ModalDialog = enhance(
                   <div className="rmb-modal-header">
                     <h3 className="rmb-modal-title">{modal.title}</h3>
                   </div>
-                  {modal.type === MODAL_TYPES.custom && renderCustomType(modal)}
-                  {modal.type !== MODAL_TYPES.custom &&
-                    renderStandardType(modal)}
+                  {modal.type === MODAL_TYPES.custom && (
+                    <CustomType modal={modal} />
+                  )}
+                  {modal.type !== MODAL_TYPES.custom && (
+                    <StandardType modal={modal} />
+                  )}
                 </div>
               </CSSTransition>
             )}
@@ -195,5 +92,5 @@ export const ModalDialog = enhance(
         </ReactModal>
       ))}
     </>
-  )
-);
+  );
+});
