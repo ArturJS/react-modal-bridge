@@ -10,7 +10,6 @@
     "@babel/preset-flow"
   ],
   "plugins": [
-    ["lodash", { "id": "recompact" }],
     "transform-async-to-promises",
     "@babel/plugin-transform-react-display-name",
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
