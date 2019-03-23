@@ -7,7 +7,7 @@
     "plugin:jest/recommended",
     "plugin:flowtype/recommended"
   ],
-  "plugins": ["flowtype", "jest", "import"],
+  "plugins": ["flowtype", "jest", "import", "react-hooks"],
   "parser": "babel-eslint",
   "rules": {
     "flowtype/require-exact-type": [2, "always"],
@@ -34,7 +34,9 @@
         "peerDependencies": true
       }
     ],
-    "import/prefer-default-export": 0
+    "import/prefer-default-export": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "flowtype": {
