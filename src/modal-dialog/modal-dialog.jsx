@@ -25,12 +25,7 @@ const noBackdropStyle = {
   }
 };
 
-export const ModalDialog = memo(() => {
-  const dismiss = (id: number) => {
-    modalService.dismiss({
-      id
-    });
-  };
+const useModalsSubscription = () => {
   const [modals, setModals] = useState([]);
 
   useEffect(() => {
@@ -43,6 +38,18 @@ export const ModalDialog = memo(() => {
 
     return unsubscribe;
   });
+
+  return modals;
+};
+
+export const ModalDialog = memo(() => {
+  const dismiss = (id: number) => {
+    modalService.dismiss({
+      id
+    });
+  };
+
+  const modals = useModalsSubscription();
 
   return (
     <>
