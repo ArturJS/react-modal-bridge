@@ -26,7 +26,7 @@ storiesOf('Basic usage', module)
   ))
   .add('info', () => (
     <>
-      Note: info modal by default do not have backdrop.
+      <p>Note: info modal by default do not have backdrop.</p>
       <Button
         onClick={() => {
           modal
@@ -44,7 +44,7 @@ storiesOf('Basic usage', module)
   ))
   .add('error', () => (
     <>
-      Note: error modal by default do not have backdrop.
+      <p>Note: error modal by default do not have backdrop.</p>
       <Button
         onClick={() => {
           modal
@@ -64,8 +64,10 @@ storiesOf('Basic usage', module)
   ))
   .add('custom', () => (
     <>
-      Note: if you do not pass `throwCancelError` param, you will not get
-      `.catch` triggered.
+      <p>
+        Note: if you do not pass `throwCancelError` param, you will not get
+        `.catch` triggered.
+      </p>
       <Button
         onClick={() => {
           modal
