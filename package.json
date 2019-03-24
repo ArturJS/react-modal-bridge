@@ -5,6 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "build": "webpack --mode production --config ./scripts/tools/webpack/webpack.config.js",
+    "deploy": "npm run build-storybook && npm run deploy-now",
+    "deploy-now": "now alias --token=$NOW_TOKEN $(now ./storybook-static --static --no-clipboard --token=$NOW_TOKEN --public) react-modal-bridge",
     "e2e": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
     "docker-rebuild-e2e-tests": "docker-compose --file docker-compose.e2e.yml up --no-deps --build e2e-tests",
     "lint": "npm run lint-js && npm run lint-scss",
@@ -16,7 +18,7 @@
     "test-coverage": "jest --coverage --env=jsdom",
     "test-watch": "jest --watch --env=jsdom",
     "storybook": "start-storybook -p 6006 -c .storybook",
-    "build-storybook": "build-storybook"
+    "build-storybook": "rimraf storybook-static && build-storybook"
   },
   "repository": {
     "type": "git",
@@ -78,10 +80,12 @@
     "lint-staged": "^8.1.5",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
+    "now": "^14.2.3",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^1.16.4",
     "prop-types": "^15.7.2",
     "react-test-renderer": "^16.8.4",
+    "rimraf": "^2.6.3",
     "sass-loader": "^7.1.0",
     "string-replace-loader": "^2.1.1",
     "stylelint": "^9.10.1",
