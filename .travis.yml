@@ -22,5 +22,5 @@ jobs:
       script: npm run e2e
 
     - stage: deploy
-      if: branch = master
+      if: (NOT type IN (pull_request)) AND (branch = master)
       script: npm run deploy
