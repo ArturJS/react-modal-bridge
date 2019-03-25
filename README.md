@@ -12,53 +12,20 @@ Make sure you have at least 16.8.0 version of react and react-dom.
 
 Otherwise if your react version is ^15.3.0 you can upgrade it with help of [react-codemods](https://github.com/reactjs/react-codemod#rename-unsafe-lifecycles).
 
-## Example
+## Interactive examples
 
-```
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { ReactModalBridge, modal } from 'react-modal-bridge';
-import 'react-modal-bridge/dist/react-modal-bridge.css';
+- [Confirm modal](https://codesandbox.io/s/3x6v27vo41)
 
-const App = () => {
-    const openModal = () => {
-        modal
-            .confirm({
-              title: 'Confirmation title',
-              body: 'some content...',
-              throwCancelError: true // will reject result if it's dismissed
-            })
-            .result
-            .then(() => {
-                console.log('Closed');
-            })
-            .catch(() => {
-                console.log('Dismissed');
-            });
-    };
+- [Info modal](https://codesandbox.io/s/88511rmov9)
 
-    return (
-        <>
-            <button type="button" onClick={openModal}>
-                Open confirmation
-            </button>
-            <ReactModalBridge />
-        </>
-    )
-};
+- [Error modal](https://codesandbox.io/s/pkp753632j)
 
-const appRootElement = document.createElement('div');
-
-ReactDOM.render(<App/>, appRootElement);
-
-document.body.appendChild(appRootElement);
-
-```
+- [Custom modal](https://codesandbox.io/s/6wp93mwvrk)
 
 ## TODO:
 
 - [x] Setup CI/CD pipelines with help of TravisCI and now.sh
-- [ ] Add more examples with type definitions (codesandbox.io)
+- [ ] Add more examples with codesandbox.io
 - [ ] Add typings for TypeScript users
 - [ ] Add more E2E tests
 - [ ] Fix unit tests when Enzyme will support react-hooks
