@@ -25,7 +25,7 @@ Otherwise if your react version is ^15.3.0 you can upgrade it with help of [reac
 ## TODO:
 
 - [x] Setup CI/CD pipelines with help of TravisCI and now.sh
-- [ ] Add more examples with codesandbox.io
+- [x] Add examples with codesandbox.io
 - [ ] Add typings for TypeScript users
 - [ ] Add more E2E tests
 - [ ] Fix unit tests when Enzyme will support react-hooks
