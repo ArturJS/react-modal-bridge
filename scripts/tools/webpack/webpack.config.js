@@ -2,6 +2,7 @@ const path = require('path');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 const { ruleToRenameReactModalClassNames } = require('./shared');
 
 module.exports = {
@@ -44,6 +45,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'react-modal-bridge.css'
     }),
-    new OptimizeCSSAssetsPlugin({})
+    new OptimizeCSSAssetsPlugin({}),
+    new WebpackShellPlugin({
+      onBuildEnd: ['npx cp src/index.d.ts build']
+    })
   ]
 };

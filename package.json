@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "The bridge between lawless react-modal and strict opinionated modal API",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
     "build": "webpack --mode production --config ./scripts/tools/webpack/webpack.config.js",
     "deploy": "npm run build-storybook && npm run deploy-now",
@@ -61,6 +62,7 @@
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-async-to-promises": "^0.8.6",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "cp": "^0.2.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^5.15.1",
@@ -94,7 +96,8 @@
     "stylelint-scss": "^3.5.4",
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.1.0",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.0",
+    "webpack-shell-plugin": "^0.5.0"
   },
   "lint-staged": {
     "*.{js,jsx}": [
