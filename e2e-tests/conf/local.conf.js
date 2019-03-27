@@ -1,5 +1,8 @@
+require('dotenv').config(); // load config from .env in dev environment
+
 const nightwatchConfig = {
   src_folders: ['tests/local'],
+  page_objects_path: ['pages'],
 
   selenium: {
     start_process: false,
@@ -9,6 +12,9 @@ const nightwatchConfig = {
 
   test_settings: {
     default: {
+      globals: {
+        waitForConditionTimeout: 5000
+      },
       desiredCapabilities: {
         build: 'nightwatch-browserstack',
         'browserstack.user':
