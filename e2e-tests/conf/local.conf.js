@@ -3,7 +3,7 @@ require('dotenv').config(); // load config from .env in dev environment
 const nightwatchConfig = {
   src_folders: ['tests/local'],
   page_objects_path: ['pages'],
-
+  test_runner: 'mocha',
   selenium: {
     start_process: false,
     host: 'hub-cloud.browserstack.com',

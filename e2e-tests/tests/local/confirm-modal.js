@@ -3,12 +3,13 @@ const modalContent = {
   body: "It's nothing to fret over)))"
 };
 
-module.exports = {
-  beforeEach: browser => {
+describe('Modal "confirm"', () => {
+  beforeEach((browser, done) => {
     browser.page.confirm().navigate();
-  },
+    done();
+  });
 
-  'should open and close modal by clicking [OK]': browser => {
+  it('should open and close modal by clicking [OK]', browser => {
     const confirmPage = browser.page.confirm();
     const { modalButtonOk } = confirmPage.elements;
 
@@ -17,9 +18,9 @@ module.exports = {
       .closeModalAndVerifyIsClosed({
         closeVia: modalButtonOk
       });
-  },
+  });
 
-  'should open and close modal by clicking [Cancel]': browser => {
+  it('should open and close modal by clicking [Cancel]', browser => {
     const confirmPage = browser.page.confirm();
     const { modalButtonCancel } = confirmPage.elements;
 
@@ -28,9 +29,9 @@ module.exports = {
       .closeModalAndVerifyIsClosed({
         closeVia: modalButtonCancel
       });
-  },
+  });
 
-  'should open and close modal by clicking [X]': browser => {
+  it('should open and close modal by clicking [X]', browser => {
     const confirmPage = browser.page.confirm();
     const { modalButtonClose } = confirmPage.elements;
 
@@ -39,5 +40,44 @@ module.exports = {
       .closeModalAndVerifyIsClosed({
         closeVia: modalButtonClose
       });
-  }
-};
+  });
+});
+
+// module.exports = {
+//   beforeEach: browser => {
+//     browser.page.confirm().navigate();
+//   },
+
+//   'should open and close modal by clicking [OK]': browser => {
+//     const confirmPage = browser.page.confirm();
+//     const { modalButtonOk } = confirmPage.elements;
+
+//     confirmPage
+//       .openModalAndVerifyContent(modalContent)
+//       .closeModalAndVerifyIsClosed({
+//         closeVia: modalButtonOk
+//       });
+//   },
+
+//   'should open and close modal by clicking [Cancel]': browser => {
+//     const confirmPage = browser.page.confirm();
+//     const { modalButtonCancel } = confirmPage.elements;
+
+//     confirmPage
+//       .openModalAndVerifyContent(modalContent)
+//       .closeModalAndVerifyIsClosed({
+//         closeVia: modalButtonCancel
+//       });
+//   },
+
+//   'should open and close modal by clicking [X]': browser => {
+//     const confirmPage = browser.page.confirm();
+//     const { modalButtonClose } = confirmPage.elements;
+
+//     confirmPage
+//       .openModalAndVerifyContent(modalContent)
+//       .closeModalAndVerifyIsClosed({
+//         closeVia: modalButtonClose
+//       });
+//   }
+// };
