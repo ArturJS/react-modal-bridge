@@ -9,11 +9,6 @@ describe('Modal "confirm"', () => {
     done();
   });
 
-  after((browser, done) => {
-    browser.end();
-    done();
-  });
-
   it('should open and close modal by clicking [OK]', browser => {
     const confirmPage = browser.page.confirm();
     const { modalButtonOk } = confirmPage.elements;
