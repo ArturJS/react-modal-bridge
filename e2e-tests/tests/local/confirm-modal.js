@@ -19,10 +19,12 @@ describe('Modal "confirm"', () => {
     const { modalButtonOk } = confirmPage.elements;
 
     confirmPage
-      .openModalAndVerifyContent(modalContent)
-      .closeModalAndVerifyIsClosed({
+      .openModal()
+      .verifyContent(modalContent)
+      .closeModal({
         closeVia: modalButtonOk
-      });
+      })
+      .verifyIsClosed();
   });
 
   it('should open and close modal by clicking [Cancel]', browser => {
@@ -30,10 +32,12 @@ describe('Modal "confirm"', () => {
     const { modalButtonCancel } = confirmPage.elements;
 
     confirmPage
-      .openModalAndVerifyContent(modalContent)
-      .closeModalAndVerifyIsClosed({
+      .openModal()
+      .verifyContent(modalContent)
+      .closeModal({
         closeVia: modalButtonCancel
-      });
+      })
+      .verifyIsClosed();
   });
 
   it('should open and close modal by clicking [X]', browser => {
@@ -41,9 +45,11 @@ describe('Modal "confirm"', () => {
     const { modalButtonClose } = confirmPage.elements;
 
     confirmPage
-      .openModalAndVerifyContent(modalContent)
-      .closeModalAndVerifyIsClosed({
+      .openModal()
+      .verifyContent(modalContent)
+      .closeModal({
         closeVia: modalButtonClose
-      });
+      })
+      .verifyIsClosed();
   });
 });

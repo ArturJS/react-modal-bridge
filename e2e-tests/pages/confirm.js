@@ -15,23 +15,30 @@ module.exports = {
   elements: {},
   commands: [
     {
-      openModalAndVerifyContent({ title, body }) {
+      openModal() {
         this.api
           .frame(0)
           .waitForElementVisible(openButton)
           .click(openButton)
-          .pause(1000)
+          .pause(1000);
+
+        return this;
+      },
+      verifyContent({ title, body }) {
+        this.api
           .waitForElementVisible(modalContent)
           .assert.containsText(modalTitle, title)
           .assert.containsText(modalBody, body);
 
         return this;
       },
-      closeModalAndVerifyIsClosed({ closeVia }) {
-        this.api
-          .click(closeVia)
-          .expect.element(modalContent)
-          .not.to.be.present.after(1000);
+      closeModal({ closeVia }) {
+        this.api.click(closeVia);
+
+        return this;
+      },
+      verifyIsClosed() {
+        this.api.expect.element(modalContent).not.to.be.present.after(1000);
 
         return this;
       },
