@@ -3,20 +3,23 @@
 const openButton = 'button';
 const modalContent = '.rmb-modal-content';
 const modalTitle = '.rmb-modal-title';
-const modalBody = '.rmb-modal-body';
+const modalBody = '.rmb-modal-body, .rmb-modal-custom-body';
 const modalButtonOk = '.rmb-btn-ok';
 const modalButtonCancel = '.rmb-btn-cancel';
 const modalButtonClose = '.rmb-close';
+
+const elements = {
+  modalContent,
+  modalButtonOk,
+  modalButtonCancel,
+  modalButtonClose
+};
 
 module.exports = {
   url(path) {
     return `${this.api.launchUrl}${path}`;
   },
-  elements: {
-    modalButtonOk,
-    modalButtonCancel,
-    modalButtonClose
-  },
+  elements,
   commands: [
     {
       openModal() {
@@ -46,11 +49,7 @@ module.exports = {
 
         return this;
       },
-      elements: {
-        modalButtonOk,
-        modalButtonCancel,
-        modalButtonClose
-      }
+      elements
     }
   ]
 };
