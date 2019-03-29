@@ -10,10 +10,10 @@ describe('Modal "error"', () => {
   });
 
   it('should open and close modal by clicking [OK]', browser => {
-    const infoPage = browser.page.error();
-    const { modalButtonOk } = infoPage.elements;
+    const errorPage = browser.page.error();
+    const { modalButtonOk } = errorPage.elements;
     browser.page.error().navigate();
-    infoPage
+    errorPage
       .openModal()
       .verifyContent(modalContent)
       .closeModal({
@@ -23,10 +23,10 @@ describe('Modal "error"', () => {
   });
 
   it('should open and close modal by clicking [X]', browser => {
-    const infoPage = browser.page.error();
-    const { modalButtonClose } = infoPage.elements;
+    const errorPage = browser.page.error();
+    const { modalButtonClose } = errorPage.elements;
 
-    infoPage
+    errorPage
       .openModal()
       .verifyContent(modalContent)
       .closeModal({
