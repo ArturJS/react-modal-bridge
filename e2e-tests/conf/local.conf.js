@@ -13,7 +13,7 @@ const nightwatchConfig = {
   test_settings: {
     default: {
       globals: {
-        waitForConditionTimeout: 10000
+        waitForConditionTimeout: 25000
       },
       desiredCapabilities: {
         build: 'nightwatch-browserstack',
