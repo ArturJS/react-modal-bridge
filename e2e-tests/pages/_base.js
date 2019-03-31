@@ -1,9 +1,9 @@
 // by some reason
-// native nightwatch `elements` do not work withing iframe
+// native nightwatch `elements` do not work within iframe
 const openButton = 'button';
 const modalContent = '.rmb-modal-content';
 const modalTitle = '.rmb-modal-title';
-const modalBody = '.rmb-modal-body, .rmb-modal-custom-body';
+const modalBody = '.rmb-modal-body';
 const modalButtonOk = '.rmb-btn-ok';
 const modalButtonCancel = '.rmb-btn-cancel';
 const modalButtonClose = '.rmb-close';
@@ -45,7 +45,7 @@ module.exports = {
         return this;
       },
       verifyIsClosed() {
-        this.api.expect.element(modalContent).not.to.be.present.after(1000);
+        this.api.expect.element(modalContent).not.to.be.present.after(5000);
 
         return this;
       },
