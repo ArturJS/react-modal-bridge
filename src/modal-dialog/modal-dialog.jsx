@@ -37,7 +37,7 @@ const useModalsSubscription = () => {
     );
 
     return unsubscribe;
-  });
+  }, []);
 
   return modals;
 };
