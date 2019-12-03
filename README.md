@@ -2,7 +2,7 @@
 
 The bridge between lawless react-modal and strict opinionated modal API
 
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=MEtqdFRZR3JsSkFtbjk3czFBa1l6M2prdDMzbzFEVUlFUUlhZEdReXp5ST0tLXFvOVU4anpjZWNvMkhmL3lyb2lNRmc9PQ==--aefafd6a79ec8c5a06b4bc0e7b42c88400d400f4)](https://www.browserstack.com/automate/public-build/MEtqdFRZR3JsSkFtbjk3czFBa1l6M2prdDMzbzFEVUlFUUlhZEdReXp5ST0tLXFvOVU4anpjZWNvMkhmL3lyb2lNRmc9PQ==--aefafd6a79ec8c5a06b4bc0e7b42c88400d400f4)
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=N2h1TWt0eUJCcjExZmV6MUtHeXUrbkJCb0l6R1hCZXNQc29zZ1dRdVlqVT0tLStNMjFTbWJoK2lFL2VFejRTNDdUcUE9PQ==--fbf3e4aa1663357d7038882448f0091cb6fd0883)](https://www.browserstack.com/automate/public-build/N2h1TWt0eUJCcjExZmV6MUtHeXUrbkJCb0l6R1hCZXNQc29zZ1dRdVlqVT0tLStNMjFTbWJoK2lFL2VFejRTNDdUcUE9PQ==--fbf3e4aa1663357d7038882448f0091cb6fd0883)
 
 The main purpose of this package is to create strict API around [react-modal](https://github.com/reactjs/react-modal) to use it in react based apps.
 
