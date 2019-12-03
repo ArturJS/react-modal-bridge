@@ -1,7 +1,7 @@
 // @flow
 import React, { memo, useState, useEffect } from 'react';
-import ReactModal from 'react-modal';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import BaseModal from './components/base-modal';
 import {
   MODAL_TYPES,
   CLOSE_DELAY_MS,
@@ -54,7 +54,7 @@ export const ModalDialog = memo(() => {
   return (
     <>
       {modals.map(modal => (
-        <ReactModal
+        <BaseModal
           key={modal.id}
           isOpen={modal.isOpen}
           onRequestClose={() => dismiss(modal.id)}
@@ -96,7 +96,7 @@ export const ModalDialog = memo(() => {
               </CSSTransition>
             )}
           </TransitionGroup>
-        </ReactModal>
+        </BaseModal>
       ))}
     </>
   );

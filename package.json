@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/ArturJS/react-modal-bridge#readme",
   "dependencies": {
-    "react-modal": "^3.8.1",
     "react-transition-group": "^2.6.0"
   },
   "devDependencies": {

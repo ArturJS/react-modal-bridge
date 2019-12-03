@@ -17,7 +17,9 @@ export const StandardType = memo(({ modal }: {| modal: Modal |}) => {
 
   return (
     <div>
-      <div className="rmb-modal-body">{<ModalBody modal={modal} />}</div>
+      <div className="rmb-modal-body">
+        <ModalBody modal={modal} />
+      </div>
       <div className="rmb-modal-footer">
         <button
           className="rmb-btn rmb-btn-primary rmb-btn-ok"
