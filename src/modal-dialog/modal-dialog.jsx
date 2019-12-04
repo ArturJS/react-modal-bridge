@@ -4,10 +4,9 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import BaseModal from './components/base-modal';
 import {
   MODAL_TYPES,
-  CLOSE_DELAY_MS,
   Modal,
-  modalService
-} from '../modal.service';
+  modalService as defaultModalService
+} from '../modal.service.jsx';
 import { CustomType, StandardType } from './components';
 import './styles';
 
@@ -25,7 +24,7 @@ const noBackdropStyle = {
   }
 };
 
-const useModalsSubscription = () => {
+const useModalsSubscription = modalService => {
   const [modals, setModals] = useState([]);
 
   useEffect(() => {
@@ -37,67 +36,72 @@ const useModalsSubscription = () => {
     );
 
     return unsubscribe;
-  }, []);
+  }, [modalService]);
 
   return modals;
 };
 
-export const ModalDialog = memo(() => {
-  const dismiss = (id: number) => {
-    modalService.dismiss({
-      id
-    });
-  };
+export const ModalDialog = memo(
+  // eslint-disable-next-line react/prop-types
+  ({ mountRoot = document.body, modalService = defaultModalService }) => {
+    const dismiss = (id: number) => {
+      modalService.dismiss({
+        id
+      });
+    };
+    // eslint-disable-next-line no-underscore-dangle
+    const closeDelayMs = modalService._getCloseDelayMs();
+    const modals = useModalsSubscription(modalService);
 
-  const modals = useModalsSubscription();
-
-  return (
-    <>
-      {modals.map(modal => (
-        <BaseModal
-          key={modal.id}
-          isOpen={modal.isOpen}
-          onRequestClose={() => dismiss(modal.id)}
-          style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
-          className={`rmb-modal ${modal.className}`}
-          shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
-          closeTimeoutMS={CLOSE_DELAY_MS}
-          contentLabel=""
-          ariaHideApp={false}
-        >
-          <TransitionGroup>
-            {modal.isOpen && (
-              <CSSTransition
-                key={modal.id}
-                appear
-                timeout={CLOSE_DELAY_MS}
-                classNames="rmb-modal-show"
-                mountOnEnter
-                unmountOnExit
-              >
-                <div className="rmb-modal-content">
-                  <button
-                    type="button"
-                    className="rmb-close"
-                    onClick={() => dismiss(modal.id)}
-                  >
-                    &times;
-                  </button>
-                  <div className="rmb-modal-header">
-                    <h3 className="rmb-modal-title">{modal.title}</h3>
+    return (
+      <>
+        {modals.map(modal => (
+          <BaseModal
+            key={modal.id}
+            isOpen={modal.isOpen}
+            onRequestClose={() => dismiss(modal.id)}
+            style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
+            className={`rmb-modal ${modal.className}`}
+            shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
+            closeTimeoutMS={closeDelayMs}
+            contentLabel=""
+            ariaHideApp={false}
+            parentSelector={() => mountRoot}
+          >
+            <TransitionGroup>
+              {modal.isOpen && (
+                <CSSTransition
+                  key={modal.id}
+                  appear
+                  timeout={closeDelayMs}
+                  classNames="rmb-modal-show"
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  <div className="rmb-modal-content">
+                    <button
+                      type="button"
+                      className="rmb-close"
+                      onClick={() => dismiss(modal.id)}
+                    >
+                      &times;
+                    </button>
+                    <div className="rmb-modal-header">
+                      <h3 className="rmb-modal-title">{modal.title}</h3>
+                    </div>
+                    {modal.type === MODAL_TYPES.custom && (
+                      <CustomType modal={modal} />
+                    )}
+                    {modal.type !== MODAL_TYPES.custom && (
+                      <StandardType modal={modal} />
+                    )}
                   </div>
-                  {modal.type === MODAL_TYPES.custom && (
-                    <CustomType modal={modal} />
-                  )}
-                  {modal.type !== MODAL_TYPES.custom && (
-                    <StandardType modal={modal} />
-                  )}
-                </div>
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </BaseModal>
-      ))}
-    </>
-  );
-});
+                </CSSTransition>
+              )}
+            </TransitionGroup>
+          </BaseModal>
+        ))}
+      </>
+    );
+  }
+);

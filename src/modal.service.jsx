@@ -1,8 +1,11 @@
 // @flow
 
 import type { Element } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import sleep from './utils/sleep';
 import { createStore, Store } from './utils/store';
+import { ModalDialog } from './modal-dialog';
 
 export const MODAL_TYPES = {
   error: 'ERROR_MODAL',
@@ -10,8 +13,6 @@ export const MODAL_TYPES = {
   info: 'INFO_MODAL',
   custom: 'CUSTOM_MODAL'
 };
-// it's necessary to perform exit animation in modal-dialog.jsx
-export const CLOSE_DELAY_MS = 300;
 
 let modalId = 0;
 const generateId = () => {
@@ -124,19 +125,60 @@ type TState = {|
 export class ModalService {
   _store: Store;
 
-  constructor() {
+  _closeDelayMs: number;
+
+  _mountRoot: string | HTMLElement | undefined;
+
+  constructor({
+    closeDelayMs,
+    classNames,
+    mountRoot
+  }: {|
+    closeDelayMs?: number,
+    classNames?: {|
+      confirm?: string,
+      info?: string,
+      error?: string
+    |},
+    mountRoot?: string | HTMLElement
+  |} = {}) {
+    // todo add runtime typecheck
     this._store = createStore({
       modals: []
     });
+    // it's necessary to perform exit animation in modal-dialog.jsx
+    this._closeDelayMs = closeDelayMs || 300;
+    this._classNames = {
+      confirm: 'rmb-modal-confirm',
+      info: 'rmb-modal-info',
+      error: 'rmb-modal-error',
+      ...(classNames || {})
+    };
+    this._mountModalIfNeeded(mountRoot);
   }
 
-  confirm({ title, body, className, throwCancelError }: TModalConfig) {
+  // eslint-disable-next-line class-methods-use-this
+  create(config) {
+    return new ModalService(config);
+  }
+
+  destroy(): void {
+    ReactDOM.unmountComponentAtNode(this._mountRoot);
+  }
+
+  confirm({
+    // prettier-ignore
+    title,
+    body,
+    className,
+    throwCancelError
+  }: TModalConfig) {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
       type: MODAL_TYPES.confirm,
-      className
+      className: `${this._classNames.confirm} ${className}`
     });
 
     return {
@@ -156,7 +198,7 @@ export class ModalService {
       body,
       throwCancelError,
       type: MODAL_TYPES.info,
-      className: `rmb-modal-info ${className}`,
+      className: `${this._classNames.info} ${className}`,
       noBackdrop: true
     });
 
@@ -177,7 +219,7 @@ export class ModalService {
       body,
       throwCancelError,
       type: MODAL_TYPES.error,
-      className: `rmb-modal-error ${className}`,
+      className: `${this._classNames.error} ${className}`,
       noBackdrop: true
     });
 
@@ -227,6 +269,24 @@ export class ModalService {
 
   async dismiss({ id, reason }: { id: number, reason?: TReason }) {
     await this._performClose({ id, reason, isClose: false });
+  }
+
+  _mountModalIfNeeded(mountRoot: string | HTMLElement | undefined): void {
+    this._mountRoot =
+      typeof mountRoot === 'string'
+        ? document.querySelector(mountRoot)
+        : mountRoot;
+
+    if (this._mountRoot) {
+      ReactDOM.render(
+        <ModalDialog mountRoot={this._mountRoot} modalService={this} />,
+        this._mountRoot
+      );
+    }
+  }
+
+  _getCloseDelayMs() {
+    return this._closeDelayMs;
   }
 
   _performOpen({
@@ -299,7 +359,7 @@ export class ModalService {
       }
     });
 
-    await sleep(CLOSE_DELAY_MS);
+    await sleep(this._getCloseDelayMs());
 
     this._store.setState({ modals: [] });
   }
@@ -333,7 +393,7 @@ export class ModalService {
       modals: [...modals]
     });
 
-    await sleep(CLOSE_DELAY_MS);
+    await sleep(this._getCloseDelayMs());
 
     this._store.setState({
       modals: modals.filter(modal => modal.id !== id)

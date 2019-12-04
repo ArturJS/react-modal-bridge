@@ -69,7 +69,7 @@ class Modal extends Component {
     shouldCloseOnEsc: true,
     shouldCloseOnOverlayClick: true,
     shouldReturnFocusAfterClose: true,
-    parentSelector: () => document.body
+    parentSelector: () => document.body // todo check
   };
 
   // eslint-disable-next-line react/sort-comp
