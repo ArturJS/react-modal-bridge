@@ -5,9 +5,8 @@ WORKDIR /e2e-tests
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     echo '%node ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     chown -R node:node . /e2e-tests
-RUN npm install --global yarn
 USER node
 COPY --chown=node:node ./package.json .
-COPY --chown=node:node ./yarn.lock .
-RUN yarn --frozen-lockfile
+COPY --chown=node:node ./package-lock.json .
+RUN npm i --production
 COPY --chown=node:node ./ ./
