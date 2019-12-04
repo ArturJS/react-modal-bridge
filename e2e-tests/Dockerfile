@@ -8,5 +8,5 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
 USER node
 COPY --chown=node:node ./package.json .
 COPY --chown=node:node ./package-lock.json .
-RUN npm i --production
+RUN npm i
 COPY --chown=node:node ./ ./
