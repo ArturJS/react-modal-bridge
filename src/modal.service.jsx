@@ -279,7 +279,10 @@ export class ModalService {
 
     if (this._mountRoot) {
       ReactDOM.render(
-        <ModalDialog mountRoot={this._mountRoot} modalService={this} />,
+        <ModalDialog
+          hasSpecificMountRoot={!!this._mountRoot}
+          modalService={this}
+        />,
         this._mountRoot
       );
     }

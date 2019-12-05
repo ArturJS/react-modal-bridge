@@ -1,5 +1,5 @@
 // @flow
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import BaseModal from './components/base-modal';
 import {
@@ -43,7 +43,7 @@ const useModalsSubscription = modalService => {
 
 export const ModalDialog = memo(
   // eslint-disable-next-line react/prop-types
-  ({ mountRoot = document.body, modalService = defaultModalService }) => {
+  ({ hasSpecificMountRoot, modalService = defaultModalService }) => {
     const dismiss = (id: number) => {
       modalService.dismiss({
         id
@@ -52,6 +52,14 @@ export const ModalDialog = memo(
     // eslint-disable-next-line no-underscore-dangle
     const closeDelayMs = modalService._getCloseDelayMs();
     const modals = useModalsSubscription(modalService);
+    const baseModalMountRootRef = useRef();
+    const getBaseModalMountRoot = () => {
+      if (hasSpecificMountRoot) {
+        return baseModalMountRootRef.current;
+      }
+
+      return document.body;
+    };
 
     return (
       <>
@@ -66,7 +74,7 @@ export const ModalDialog = memo(
             closeTimeoutMS={closeDelayMs}
             contentLabel=""
             ariaHideApp={false}
-            parentSelector={() => mountRoot}
+            parentSelector={getBaseModalMountRoot}
           >
             <TransitionGroup>
               {modal.isOpen && (
@@ -101,6 +109,12 @@ export const ModalDialog = memo(
             </TransitionGroup>
           </BaseModal>
         ))}
+        {hasSpecificMountRoot && (
+          <div
+            className="rmb-base-modal-container"
+            ref={baseModalMountRootRef}
+          />
+        )}
       </>
     );
   }
