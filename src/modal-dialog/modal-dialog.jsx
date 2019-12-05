@@ -98,10 +98,10 @@ export const ModalDialog = memo(
                       <h3 className="rmb-modal-title">{modal.title}</h3>
                     </div>
                     {modal.type === MODAL_TYPES.custom && (
-                      <CustomType modal={modal} />
+                      <CustomType modal={modal} modalService={modalService} />
                     )}
                     {modal.type !== MODAL_TYPES.custom && (
-                      <StandardType modal={modal} />
+                      <StandardType modal={modal} modalService={modalService} />
                     )}
                   </div>
                 </CSSTransition>

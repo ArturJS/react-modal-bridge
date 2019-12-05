@@ -38,7 +38,8 @@ type TBody =
 
 type TModalResult = {|
   result: Promise<TReason>,
-  close: TCloseFn
+  close: TCloseFn,
+  dismiss: TDismissFn
 |};
 
 type TModalConfig = {|
@@ -231,7 +232,7 @@ export class ModalService {
 
   custom({
     title,
-    body,
+    body, // todo add support for `component` instead of title and body
     className,
     throwCancelError
   }: TModalConfig): TModalResult {
@@ -338,7 +339,10 @@ export class ModalService {
 
     return {
       result,
-      close
+      close,
+      dismiss: reason => {
+        this.dismiss({ id, reason });
+      }
     };
   }
 
