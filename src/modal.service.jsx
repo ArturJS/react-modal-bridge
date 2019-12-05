@@ -28,13 +28,15 @@ type TCloseFn = (reason?: TReason) => void;
 
 type TDismissFn = (reason?: TReason) => void;
 
-type TBody =
-  | string
-  | (({|
-      // eslint-disable-next-line flowtype/no-weak-types
-      closeModal: (reason?: mixed) => void
-      // eslint-disable-next-line flowtype/no-weak-types
-    |}) => Element<any>);
+type TBodyFn = ({|
+  // eslint-disable-next-line flowtype/no-weak-types
+  closeModal?: (reason?: mixed) => void,
+  // eslint-disable-next-line flowtype/no-weak-types
+  dismissModal?: (reason?: mixed) => void
+  // eslint-disable-next-line flowtype/no-weak-types
+|}) => Element<any>;
+
+type TBody = string | TBodyFn;
 
 type TModalResult = {|
   result: Promise<TReason>,
@@ -42,12 +44,21 @@ type TModalResult = {|
   dismiss: TDismissFn
 |};
 
-type TModalConfig = {|
-  title?: string,
-  body: TBody,
+type TModalConfigBase = {|
   className?: string,
   throwCancelError?: boolean
 |};
+
+type TModalConfig =
+  | {|
+      title?: string,
+      body: TBody,
+      ...TModalConfigBase
+    |}
+  | {|
+      component: TBodyFn,
+      ...TModalConfigBase
+    |};
 
 type TModalType = $Values<typeof MODAL_TYPES>;
 
@@ -65,6 +76,8 @@ export class Modal {
   title: string;
 
   body: TBody;
+
+  component: TBodyFn;
 
   type: TModalType;
 
@@ -86,6 +99,7 @@ export class Modal {
     id,
     title = '',
     body,
+    component,
     type,
     close = () => {},
     dismiss = () => {},
@@ -97,6 +111,7 @@ export class Modal {
     id: number,
     title: string,
     body: TBody,
+    component: TBodyFn,
     type: TModalType,
     close: TCloseFn,
     dismiss: TDismissFn,
@@ -108,6 +123,7 @@ export class Modal {
     this.id = id;
     this.title = title;
     this.body = body;
+    this.component = component;
     this.type = type;
     this.close = close;
     this.dismiss = dismiss;
@@ -232,13 +248,15 @@ export class ModalService {
 
   custom({
     title,
-    body, // todo add support for `component` instead of title and body
+    body,
+    component,
     className,
     throwCancelError
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
+      component,
       throwCancelError,
       type: MODAL_TYPES.custom,
       className
@@ -296,6 +314,7 @@ export class ModalService {
   _performOpen({
     title = '',
     body,
+    component,
     type,
     className = '',
     throwCancelError = false,
@@ -312,6 +331,7 @@ export class ModalService {
       id,
       title,
       body,
+      component,
       type,
       className,
       close,
@@ -340,9 +360,7 @@ export class ModalService {
     return {
       result,
       close,
-      dismiss: reason => {
-        this.dismiss({ id, reason });
-      }
+      dismiss
     };
   }
 

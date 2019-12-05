@@ -60,6 +60,26 @@ export const ModalDialog = memo(
 
       return document.body;
     };
+    const renderDefaultModalFrame = modal => (
+      <div className="rmb-modal-content">
+        <button
+          type="button"
+          className="rmb-close"
+          onClick={() => dismiss(modal.id)}
+        >
+          &times;
+        </button>
+        <div className="rmb-modal-header">
+          <h3 className="rmb-modal-title">{modal.title}</h3>
+        </div>
+        {modal.type === MODAL_TYPES.custom && (
+          <CustomType modal={modal} modalService={modalService} />
+        )}
+        {modal.type !== MODAL_TYPES.custom && (
+          <StandardType modal={modal} modalService={modalService} />
+        )}
+      </div>
+    );
 
     return (
       <>
@@ -86,24 +106,22 @@ export const ModalDialog = memo(
                   mountOnEnter
                   unmountOnExit
                 >
-                  <div className="rmb-modal-content">
-                    <button
-                      type="button"
-                      className="rmb-close"
-                      onClick={() => dismiss(modal.id)}
-                    >
-                      &times;
-                    </button>
-                    <div className="rmb-modal-header">
-                      <h3 className="rmb-modal-title">{modal.title}</h3>
-                    </div>
-                    {modal.type === MODAL_TYPES.custom && (
-                      <CustomType modal={modal} modalService={modalService} />
-                    )}
-                    {modal.type !== MODAL_TYPES.custom && (
-                      <StandardType modal={modal} modalService={modalService} />
-                    )}
-                  </div>
+                  {modal.component
+                    ? modal.component({
+                        closeModal: reason => {
+                          modalService.close({
+                            id: modal.id,
+                            reason
+                          });
+                        },
+                        dismissModal: reason => {
+                          modalService.dismiss({
+                            id: modal.id,
+                            reason
+                          });
+                        }
+                      })
+                    : renderDefaultModalFrame(modal)}
                 </CSSTransition>
               )}
             </TransitionGroup>
