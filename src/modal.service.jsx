@@ -153,7 +153,8 @@ export class Modal {
       shouldCloseOnOverlayClick,
       noBackdrop,
       isOpen: true,
-      throwCancelError
+      throwCancelError,
+      CancelError
     });
   }
 }
