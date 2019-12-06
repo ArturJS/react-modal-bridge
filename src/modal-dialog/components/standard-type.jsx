@@ -4,7 +4,16 @@ import { MODAL_TYPES, Modal, ModalService } from '../../modal.service.jsx';
 import { ModalBody } from './modal-body.jsx';
 
 export const StandardType = memo(
-  ({ modal, modalService }: {| modal: Modal, modalService: ModalService |}) => {
+  ({
+    cn,
+    modal,
+    modalService
+  }: {|
+    // eslint-disable-next-line flowtype/no-weak-types
+    cn: Object,
+    modal: Modal,
+    modalService: ModalService
+  |}) => {
     const close = (id: number) => {
       modalService.close({
         id
@@ -18,12 +27,12 @@ export const StandardType = memo(
 
     return (
       <div>
-        <div className="rmb-modal-body">
+        <div className={cn.modalBody}>
           <ModalBody modal={modal} />
         </div>
-        <div className="rmb-modal-footer">
+        <div className={cn.modalFooter}>
           <button
-            className="rmb-btn rmb-btn-primary rmb-btn-ok"
+            className={`${cn.btn} ${cn.btnPrimary} ${cn.btnOk}`}
             type="button"
             onClick={() => close(modal.id)}
           >
@@ -31,7 +40,7 @@ export const StandardType = memo(
           </button>
           {modal.type === MODAL_TYPES.confirm && (
             <button
-              className="rmb-btn rmb-btn-default rmb-btn-cancel"
+              className={`${cn.btn} ${cn.btnDefault} ${cn.btnCancel}`}
               type="button"
               onClick={() => dismiss(modal.id)}
             >

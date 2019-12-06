@@ -4,8 +4,17 @@ import { Modal, ModalService } from '../../modal.service.jsx';
 import { ModalBody } from './modal-body.jsx';
 
 export const CustomType = memo(
-  ({ modal, modalService }: {| modal: Modal, modalService: ModalService |}) => (
-    <div className="rmb-modal-body">
+  ({
+    cn,
+    modal,
+    modalService
+  }: {|
+    // eslint-disable-next-line flowtype/no-weak-types
+    cn: Object,
+    modal: Modal,
+    modalService: ModalService
+  |}) => (
+    <div className={cn.ModalBody}>
       {<ModalBody modal={modal} modalService={modalService} />}
     </div>
   )

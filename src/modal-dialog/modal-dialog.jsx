@@ -7,6 +7,7 @@ import {
   Modal,
   modalService as defaultModalService
 } from '../modal.service.jsx';
+import { getClassNames } from '../utils';
 import { CustomType, StandardType } from './components';
 import './styles';
 
@@ -44,6 +45,8 @@ const useModalsSubscription = modalService => {
 export const ModalDialog = memo(
   // eslint-disable-next-line react/prop-types
   ({ hasSpecificMountRoot, modalService = defaultModalService }) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const cn = getClassNames(modalService._baseClassNames);
     const dismiss = (id: number) => {
       modalService.dismiss({
         id
@@ -61,22 +64,22 @@ export const ModalDialog = memo(
       return document.body;
     };
     const renderDefaultModalFrame = modal => (
-      <div className="rmb-modal-content">
+      <div className={cn.modalContent}>
         <button
           type="button"
-          className="rmb-close"
+          className={cn.close}
           onClick={() => dismiss(modal.id)}
         >
           &times;
         </button>
-        <div className="rmb-modal-header">
-          <h3 className="rmb-modal-title">{modal.title}</h3>
+        <div className={cn.modalHeader}>
+          <h3 className={cn.modalTitle}>{modal.title}</h3>
         </div>
         {modal.type === MODAL_TYPES.custom && (
-          <CustomType modal={modal} modalService={modalService} />
+          <CustomType cn={cn} modal={modal} modalService={modalService} />
         )}
         {modal.type !== MODAL_TYPES.custom && (
-          <StandardType modal={modal} modalService={modalService} />
+          <StandardType cn={cn} modal={modal} modalService={modalService} />
         )}
       </div>
     );
@@ -89,12 +92,13 @@ export const ModalDialog = memo(
             isOpen={modal.isOpen}
             onRequestClose={() => dismiss(modal.id)}
             style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
-            className={`rmb-modal ${modal.className}`}
+            className={`${cn.modal} ${modal.className}`}
             shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
             closeTimeoutMS={closeDelayMs}
             contentLabel=""
             ariaHideApp={false}
             parentSelector={getBaseModalMountRoot}
+            cn={cn}
           >
             <TransitionGroup>
               {modal.isOpen && (
@@ -102,7 +106,7 @@ export const ModalDialog = memo(
                   key={modal.id}
                   appear
                   timeout={closeDelayMs}
-                  classNames="rmb-modal-show"
+                  classNames={cn.modalShow}
                   mountOnEnter
                   unmountOnExit
                 >
@@ -128,10 +132,7 @@ export const ModalDialog = memo(
           </BaseModal>
         ))}
         {hasSpecificMountRoot && (
-          <div
-            className="rmb-base-modal-container"
-            ref={baseModalMountRootRef}
-          />
+          <div className={cn.baseModalContainer} ref={baseModalMountRootRef} />
         )}
       </>
     );

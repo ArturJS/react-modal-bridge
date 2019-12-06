@@ -1,0 +1,19 @@
+@import "../utils/index";
+
+.dv-modal-error {
+
+  .dv-modal-title {
+    margin-bottom: 15px;
+    color: $c-white;
+  }
+
+  .dv-modal-content {
+    background-color: $c-bittersweet;
+    color: $c-white;
+    padding: 15px;
+  }
+
+  .dv-modal-body {
+    padding: 0;
+  }
+}

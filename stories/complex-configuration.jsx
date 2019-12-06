@@ -3,13 +3,39 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Button } from '@storybook/react/demo';
 import { modal as modalService } from '../src';
+import './styles';
 
 const useModal = () => {
   const [modal, setModal] = useState();
 
   useEffect(() => {
     const modalInstance = modalService.create({
-      mountRoot: '#modal-mount-root'
+      mountRoot: '#modal-mount-root',
+      classNames: {
+        confirm: 'dv-modal-confirm',
+        info: 'dv-modal-info',
+        error: 'dv-modal-error'
+      },
+      baseClassNames: {
+        modalHeader: 'dv-modal-header',
+        modalTitle: 'dv-modal-title',
+        modalBody: 'dv-modal-body',
+        modalContent: 'dv-modal-content',
+        modalFooter: 'dv-modal-footer',
+        modalShow: 'dv-modal-show',
+        btn: 'dv-btn',
+        btnPrimary: 'dv-btn-primary',
+        btnDefault: 'dv-btn-default',
+        btnOk: 'dv-btn-ok',
+        btnCancel: 'dv-btn-cancel',
+        close: 'dv-close',
+        modal: 'dv-modal',
+        baseModalContainer: 'dv-base-modal-container',
+        overlay: 'dv-overlay',
+        content: 'dv-content',
+        portal: 'dv-portal',
+        bodyOpen: 'dv-modal-body-open'
+      }
     });
 
     setModal(modalInstance);

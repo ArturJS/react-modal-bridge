@@ -1,4 +1,4 @@
-import sleep from '../sleep';
+import { sleep } from '../sleep';
 
 const flushPromises = () => new Promise(resolve => setImmediate(resolve));
 

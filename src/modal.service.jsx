@@ -3,7 +3,7 @@
 import type { Element } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import sleep from './utils/sleep';
+import { sleep } from './utils';
 import { createStore, Store } from './utils/store';
 import { ModalDialog } from './modal-dialog';
 
@@ -70,6 +70,27 @@ type TModalOpenConfig = {|
 
 class CancelError extends Error {}
 
+type TBaseClassNames = {|
+  modalHeader?: string,
+  modalTitle?: string,
+  modalBody?: string,
+  modalContent?: string,
+  modalFooter?: string,
+  modalShow?: string,
+  btn?: string,
+  btnPrimary?: string,
+  btnDefault?: string,
+  btnOk?: string,
+  btnCancel?: string,
+  close?: string,
+  modal?: string,
+  baseModalContainer?: string,
+  overlay?: string,
+  content?: string,
+  portal?: string,
+  bodyOpen?: string
+|};
+
 export class Modal {
   id: number;
 
@@ -120,18 +141,20 @@ export class Modal {
     noBackdrop: boolean,
     throwCancelError: boolean
   |}) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.component = component;
-    this.type = type;
-    this.close = close;
-    this.dismiss = dismiss;
-    this.className = className;
-    this.shouldCloseOnOverlayClick = shouldCloseOnOverlayClick;
-    this.noBackdrop = noBackdrop;
-    this.isOpen = true;
-    this.throwCancelError = throwCancelError;
+    Object.assign(this, {
+      id,
+      title,
+      body,
+      component,
+      type,
+      close,
+      dismiss,
+      className,
+      shouldCloseOnOverlayClick,
+      noBackdrop,
+      isOpen: true,
+      throwCancelError
+    });
   }
 }
 
@@ -149,6 +172,7 @@ export class ModalService {
   constructor({
     closeDelayMs,
     classNames,
+    baseClassNames,
     mountRoot
   }: {|
     closeDelayMs?: number,
@@ -157,6 +181,7 @@ export class ModalService {
       info?: string,
       error?: string
     |},
+    baseClassNames?: TBaseClassNames,
     mountRoot?: string | HTMLElement
   |} = {}) {
     // todo add runtime typecheck
@@ -164,13 +189,14 @@ export class ModalService {
       modals: []
     });
     // it's necessary to perform exit animation in modal-dialog.jsx
-    this._closeDelayMs = closeDelayMs || 300;
+    this._closeDelayMs = closeDelayMs ?? 300;
     this._classNames = {
       confirm: 'rmb-modal-confirm',
       info: 'rmb-modal-info',
       error: 'rmb-modal-error',
-      ...(classNames || {})
+      ...(classNames ?? {})
     };
+    this._baseClassNames = baseClassNames ?? {};
     this._mountModalIfNeeded(mountRoot);
   }
 
@@ -187,7 +213,7 @@ export class ModalService {
     // prettier-ignore
     title,
     body,
-    className,
+    className = '',
     throwCancelError
   }: TModalConfig) {
     const { result, close } = this._performOpen({
@@ -250,7 +276,7 @@ export class ModalService {
     title,
     body,
     component,
-    className,
+    className = '',
     throwCancelError
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({

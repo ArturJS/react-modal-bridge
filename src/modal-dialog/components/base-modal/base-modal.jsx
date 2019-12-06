@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import ModalPortal from './base-modal-portal.jsx';
 import * as ariaAppHider from './helpers/ariaAppHider';
 
-export const portalClassName = 'ReactModalPortal';
-export const bodyOpenClassName = 'ReactModal__Body--open';
-
 function getParentElement(parentSelector) {
   return parentSelector();
 }
@@ -19,8 +16,6 @@ class Modal extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    portalClassName: PropTypes.string,
-    bodyOpenClassName: PropTypes.string,
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
     htmlOpenClassName: PropTypes.string,
     className: PropTypes.oneOfType([
@@ -54,14 +49,18 @@ class Modal extends Component {
     contentLabel: PropTypes.string,
     shouldCloseOnEsc: PropTypes.bool,
     overlayRef: PropTypes.func,
-    contentRef: PropTypes.func
+    contentRef: PropTypes.func,
+    cn: PropTypes.shape({
+      content: PropTypes.string,
+      overlay: PropTypes.string,
+      portal: PropTypes.string,
+      bodyOpen: PropTypes.string
+    })
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
   };
   /* eslint-enable react/no-unused-prop-types */
 
   static defaultProps = {
-    portalClassName,
-    bodyOpenClassName,
     role: 'dialog',
     ariaHideApp: true,
     closeTimeoutMS: 0,
@@ -100,7 +99,7 @@ class Modal extends Component {
 
   componentDidMount() {
     // eslint-disable-next-line react/destructuring-assignment
-    this.node.className = this.props.portalClassName;
+    this.node.className = this.props.cn.portal;
 
     // eslint-disable-next-line react/destructuring-assignment
     const parent = getParentElement(this.props.parentSelector);
@@ -108,11 +107,11 @@ class Modal extends Component {
   }
 
   componentDidUpdate(prevProps, _, snapshot) {
-    // eslint-disable-next-line no-shadow
-    const { portalClassName } = this.props;
+    // eslint-disable-next-line no-shadow, react/destructuring-assignment
+    const { portal } = this.props.cn.portal;
 
-    if (prevProps.portalClassName !== portalClassName) {
-      this.node.className = portalClassName;
+    if (prevProps.cn.portal !== portal) {
+      this.node.className = portal;
     }
 
     const { prevParent, nextParent } = snapshot;

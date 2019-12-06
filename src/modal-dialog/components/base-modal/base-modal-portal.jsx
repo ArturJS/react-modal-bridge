@@ -5,12 +5,6 @@ import scopeTab from './helpers/scopeTab';
 import * as ariaAppHider from './helpers/ariaAppHider';
 import * as classList from './helpers/classList';
 
-// so that our CSS is statically analyzable
-const CLASS_NAMES = {
-  overlay: 'ReactModal__Overlay',
-  content: 'ReactModal__Content'
-};
-
 const TAB_KEY = 9;
 const ESC_KEY = 27;
 
@@ -30,7 +24,6 @@ export default class ModalPortal extends Component {
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
     className: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     overlayClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    bodyOpenClassName: PropTypes.string,
     htmlOpenClassName: PropTypes.string,
     ariaHideApp: PropTypes.bool,
     appElement: PropTypes.instanceOf(window.HTMLElement),
@@ -49,7 +42,13 @@ export default class ModalPortal extends Component {
     shouldCloseOnEsc: PropTypes.bool,
     overlayRef: PropTypes.func,
     contentRef: PropTypes.func,
-    id: PropTypes.string
+    id: PropTypes.string,
+    cn: PropTypes.shape({
+      content: PropTypes.string,
+      overlay: PropTypes.string,
+      portal: PropTypes.string,
+      bodyOpen: PropTypes.string
+    })
     /* eslint-enable react/require-default-props, react/forbid-prop-types */
   };
 
@@ -58,7 +57,9 @@ export default class ModalPortal extends Component {
       overlay: {},
       content: {}
     },
-    defaultStyles: {}
+    defaultStyles: {},
+    className: '',
+    overlayClassName: ''
   };
 
   constructor(props) {
@@ -83,10 +84,10 @@ export default class ModalPortal extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line react/destructuring-assignment
-      if (prevProps.bodyOpenClassName !== this.props.bodyOpenClassName) {
+      if (prevProps.cn.bodyOpen !== this.props.cn.bodyOpen) {
         // eslint-disable-next-line no-console
         console.warn(
-          "react-modal-bridge: 'bodyOpenClassName' prop has been modified. " +
+          "react-modal-bridge: 'bodyOpen' prop has been modified. " +
             'This may cause unexpected behavior when multiple modals are open.'
         );
       }
@@ -142,16 +143,11 @@ export default class ModalPortal extends Component {
   };
 
   afterClose = () => {
-    const {
-      appElement,
-      ariaHideApp,
-      htmlOpenClassName,
-      bodyOpenClassName
-    } = this.props;
+    const { appElement, ariaHideApp, htmlOpenClassName, cn } = this.props;
 
     // Remove classes.
     // eslint-disable-next-line no-unused-expressions
-    bodyOpenClassName && classList.remove(document.body, bodyOpenClassName);
+    cn.bodyOpen && classList.remove(document.body, cn.bodyOpen);
 
     // eslint-disable-next-line no-unused-expressions
     htmlOpenClassName &&
@@ -323,13 +319,14 @@ export default class ModalPortal extends Component {
     this.content.contains(document.activeElement);
 
   buildClassName = (which, additional) => {
+    const base = this.props.cn[which]; // eslint-disable-line react/destructuring-assignment
     const classNames =
       typeof additional === 'object'
         ? additional
         : {
-            base: CLASS_NAMES[which],
-            afterOpen: `${CLASS_NAMES[which]}--after-open`,
-            beforeClose: `${CLASS_NAMES[which]}--before-close`
+            base,
+            afterOpen: `${base}-after-open`,
+            beforeClose: `${base}-before-close`
           };
     let className = classNames.base;
     const { afterOpen, beforeClose } = this.state;
@@ -352,16 +349,11 @@ export default class ModalPortal extends Component {
     }, {});
 
   beforeOpen() {
-    const {
-      appElement,
-      ariaHideApp,
-      htmlOpenClassName,
-      bodyOpenClassName
-    } = this.props;
+    const { appElement, ariaHideApp, htmlOpenClassName, cn } = this.props;
 
     // Add classes.
     // eslint-disable-next-line no-unused-expressions
-    bodyOpenClassName && classList.add(document.body, bodyOpenClassName);
+    cn.bodyOpen && classList.add(document.body, cn.bodyOpen);
 
     // eslint-disable-next-line no-unused-expressions
     htmlOpenClassName &&
