@@ -53,6 +53,8 @@ type TModalConfig =
   | {|
       title?: string,
       body: TBody,
+      okText?: string,
+      cancelText?: string,
       ...TModalConfigBase
     |}
   | {|
@@ -116,6 +118,10 @@ export class Modal {
 
   throwCancelError: boolean;
 
+  okText: string;
+
+  cancelText: string;
+
   constructor({
     id,
     title = '',
@@ -127,7 +133,9 @@ export class Modal {
     className = '',
     shouldCloseOnOverlayClick = true,
     noBackdrop = false,
-    throwCancelError = false
+    throwCancelError = false,
+    okText = 'Ok',
+    cancelText = 'Cancel'
   }: {|
     id: number,
     title: string,
@@ -154,6 +162,8 @@ export class Modal {
       noBackdrop,
       isOpen: true,
       throwCancelError,
+      okText,
+      cancelText,
       CancelError
     });
   }
@@ -215,14 +225,20 @@ export class ModalService {
     title,
     body,
     className = '',
-    throwCancelError
+    throwCancelError,
+    okText,
+    cancelText,
+    noBackdrop
   }: TModalConfig) {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
+      cancelText,
       type: MODAL_TYPES.confirm,
-      className: `${this._classNames.confirm} ${className}`
+      className: `${this._classNames.confirm} ${className}`,
+      noBackdrop
     });
 
     return {
@@ -235,15 +251,18 @@ export class ModalService {
     title,
     body,
     className = '',
-    throwCancelError
+    throwCancelError,
+    okText,
+    noBackdrop = true
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
       type: MODAL_TYPES.info,
       className: `${this._classNames.info} ${className}`,
-      noBackdrop: true
+      noBackdrop
     });
 
     return {
@@ -256,15 +275,18 @@ export class ModalService {
     title,
     body,
     className = '',
-    throwCancelError
+    throwCancelError,
+    okText,
+    noBackdrop = true
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
       type: MODAL_TYPES.error,
       className: `${this._classNames.error} ${className}`,
-      noBackdrop: true
+      noBackdrop
     });
 
     return {
@@ -278,7 +300,8 @@ export class ModalService {
     body,
     component,
     className = '',
-    throwCancelError
+    throwCancelError,
+    noBackdrop
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
@@ -286,7 +309,8 @@ export class ModalService {
       component,
       throwCancelError,
       type: MODAL_TYPES.custom,
-      className
+      className,
+      noBackdrop
     });
 
     return {
@@ -345,7 +369,9 @@ export class ModalService {
     type,
     className = '',
     throwCancelError = false,
-    noBackdrop = false
+    noBackdrop = false,
+    okText,
+    cancelText
   }: TModalOpenConfig): TModalResult {
     let close = () => {};
     let dismiss = () => {};
@@ -364,8 +390,10 @@ export class ModalService {
       close,
       dismiss,
       noBackdrop,
-      shouldCloseOnOverlayClick: true,
-      throwCancelError
+      shouldCloseOnOverlayClick: true, // todo make configurable
+      throwCancelError,
+      okText,
+      cancelText
     });
 
     this._store.setState(({ modals }: { modals: Array<Modal> }) => ({

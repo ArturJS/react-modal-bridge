@@ -57,7 +57,9 @@ storiesOf('Complex configuration', module)
                 .confirm({
                   title: 'Are you sure?)',
                   body: "It's nothing to fret over)))",
-                  throwCancelError: true
+                  throwCancelError: true,
+                  okText: 'Yep!',
+                  cancelText: 'Oh no...'
                 })
                 .result.then(action('close'))
                 .catch(action('dismiss'));

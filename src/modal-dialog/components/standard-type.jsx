@@ -36,7 +36,7 @@ export const StandardType = memo(
             type="button"
             onClick={() => close(modal.id)}
           >
-            Ok
+            {modal.okText}
           </button>
           {modal.type === MODAL_TYPES.confirm && (
             <button
@@ -44,7 +44,7 @@ export const StandardType = memo(
               type="button"
               onClick={() => dismiss(modal.id)}
             >
-              Cancel
+              {modal.cancelText}
             </button>
           )}
         </div>
