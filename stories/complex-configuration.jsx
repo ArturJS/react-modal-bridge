@@ -129,7 +129,8 @@ storiesOf('Complex configuration', module)
               modal
                 .custom({
                   component: CustomModal,
-                  throwCancelError: true
+                  throwCancelError: true,
+                  shouldCloseOnOverlayClick: false
                 })
                 .result.then(action('close'))
                 .catch(action('dismiss'));

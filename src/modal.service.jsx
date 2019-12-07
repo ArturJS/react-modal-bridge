@@ -55,6 +55,7 @@ type TModalConfig =
       body: TBody,
       okText?: string,
       cancelText?: string,
+      shouldCloseOnOverlayClick?: boolean,
       ...TModalConfigBase
     |}
   | {|
@@ -228,7 +229,8 @@ export class ModalService {
     throwCancelError,
     okText,
     cancelText,
-    noBackdrop
+    noBackdrop,
+    shouldCloseOnOverlayClick
   }: TModalConfig) {
     const { result, close } = this._performOpen({
       title,
@@ -238,7 +240,8 @@ export class ModalService {
       cancelText,
       type: MODAL_TYPES.confirm,
       className: `${this._classNames.confirm} ${className}`,
-      noBackdrop
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -253,7 +256,8 @@ export class ModalService {
     className = '',
     throwCancelError,
     okText,
-    noBackdrop = true
+    noBackdrop = true,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
@@ -262,7 +266,8 @@ export class ModalService {
       okText,
       type: MODAL_TYPES.info,
       className: `${this._classNames.info} ${className}`,
-      noBackdrop
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -277,7 +282,8 @@ export class ModalService {
     className = '',
     throwCancelError,
     okText,
-    noBackdrop = true
+    noBackdrop = true,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
@@ -286,7 +292,8 @@ export class ModalService {
       okText,
       type: MODAL_TYPES.error,
       className: `${this._classNames.error} ${className}`,
-      noBackdrop
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -301,7 +308,8 @@ export class ModalService {
     component,
     className = '',
     throwCancelError,
-    noBackdrop
+    noBackdrop,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
@@ -310,7 +318,8 @@ export class ModalService {
       throwCancelError,
       type: MODAL_TYPES.custom,
       className,
-      noBackdrop
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -371,7 +380,8 @@ export class ModalService {
     throwCancelError = false,
     noBackdrop = false,
     okText,
-    cancelText
+    cancelText,
+    shouldCloseOnOverlayClick = true
   }: TModalOpenConfig): TModalResult {
     let close = () => {};
     let dismiss = () => {};
@@ -390,7 +400,7 @@ export class ModalService {
       close,
       dismiss,
       noBackdrop,
-      shouldCloseOnOverlayClick: true, // todo make configurable
+      shouldCloseOnOverlayClick,
       throwCancelError,
       okText,
       cancelText
