@@ -8,6 +8,31 @@ function getParentElement(parentSelector) {
   return parentSelector();
 }
 
+const defaultStyles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+  },
+  content: {
+    position: 'absolute',
+    top: '40px',
+    left: '40px',
+    right: '40px',
+    bottom: '40px',
+    border: '1px solid #ccc',
+    background: '#fff',
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch',
+    borderRadius: '4px',
+    outline: 'none',
+    padding: '20px'
+  }
+};
+
 class Modal extends Component {
   static setAppElement(element) {
     ariaAppHider.setElement(element);
@@ -55,7 +80,8 @@ class Modal extends Component {
       overlay: PropTypes.string,
       portal: PropTypes.string,
       bodyOpen: PropTypes.string
-    })
+    }),
+    disableInlineStyles: PropTypes.bool
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
   };
   /* eslint-enable react/no-unused-prop-types */
@@ -68,33 +94,8 @@ class Modal extends Component {
     shouldCloseOnEsc: true,
     shouldCloseOnOverlayClick: true,
     shouldReturnFocusAfterClose: true,
-    parentSelector: () => document.body
-  };
-
-  // eslint-disable-next-line react/sort-comp
-  static defaultStyles = {
-    overlay: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(255, 255, 255, 0.75)'
-    },
-    content: {
-      position: 'absolute',
-      top: '40px',
-      left: '40px',
-      right: '40px',
-      bottom: '40px',
-      border: '1px solid #ccc',
-      background: '#fff',
-      overflow: 'auto',
-      WebkitOverflowScrolling: 'touch',
-      borderRadius: '4px',
-      outline: 'none',
-      padding: '20px'
-    }
+    parentSelector: () => document.body,
+    disableInlineStyles: false
   };
 
   componentDidMount() {
@@ -169,10 +170,16 @@ class Modal extends Component {
     this.portal = ref;
   };
 
+  getDefaultStyles = () => {
+    const { disableInlineStyles } = this.props;
+
+    return disableInlineStyles ? null : defaultStyles;
+  };
+
   renderPortal = props => {
     const portal = createPortal(
       this,
-      <ModalPortal defaultStyles={Modal.defaultStyles} {...props} />,
+      <ModalPortal defaultStyles={this.getDefaultStyles()} {...props} />,
       this.node
     );
     this.portalRef(portal);
@@ -186,7 +193,7 @@ class Modal extends Component {
     return createPortal(
       <ModalPortal
         ref={this.portalRef}
-        defaultStyles={Modal.defaultStyles}
+        defaultStyles={this.getDefaultStyles()}
         {...this.props}
       />,
       this.node

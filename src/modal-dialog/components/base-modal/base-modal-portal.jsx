@@ -381,8 +381,8 @@ export default class ModalPortal extends Component {
       data,
       children
     } = this.props;
-    const contentStyles = className ? {} : defaultStyles.content;
-    const overlayStyles = overlayClassName ? {} : defaultStyles.overlay;
+    const contentStyles = className ? {} : defaultStyles?.content;
+    const overlayStyles = overlayClassName ? {} : defaultStyles?.overlay;
 
     /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     return this.shouldBeClosed() ? null : (

@@ -48,9 +48,7 @@ export const ModalDialog = memo(
     // eslint-disable-next-line no-underscore-dangle
     const cn = getClassNames(modalService._baseClassNames);
     const dismiss = (id: number) => {
-      modalService.dismiss({
-        id
-      });
+      modalService.dismiss({ id });
     };
     // eslint-disable-next-line no-underscore-dangle
     const closeDelayMs = modalService._getCloseDelayMs();
@@ -98,6 +96,7 @@ export const ModalDialog = memo(
             contentLabel=""
             ariaHideApp={false}
             parentSelector={getBaseModalMountRoot}
+            disableInlineStyles={modalService._disableInlineStyles} // eslint-disable-line no-underscore-dangle
             cn={cn}
           >
             <TransitionGroup>

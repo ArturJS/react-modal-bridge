@@ -181,11 +181,14 @@ export class ModalService {
 
   _mountRoot: string | HTMLElement | undefined;
 
+  _disableInlineStyles: boolean;
+
   constructor({
     closeDelayMs,
     classNames,
     baseClassNames,
-    mountRoot
+    mountRoot,
+    disableInlineStyles
   }: {|
     closeDelayMs?: number,
     classNames?: {|
@@ -194,7 +197,8 @@ export class ModalService {
       error?: string
     |},
     baseClassNames?: TBaseClassNames,
-    mountRoot?: string | HTMLElement
+    mountRoot?: string | HTMLElement,
+    disableInlineStyles?: boolean
   |} = {}) {
     // todo add runtime typecheck
     this._store = createStore({
@@ -209,6 +213,7 @@ export class ModalService {
       ...(classNames ?? {})
     };
     this._baseClassNames = baseClassNames ?? {};
+    this._disableInlineStyles = disableInlineStyles ?? false;
     this._mountModalIfNeeded(mountRoot);
   }
 
