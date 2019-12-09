@@ -29,7 +29,7 @@ module.exports = {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
-      ruleToRenameReactModalClassNames
+      ruleToRenameReactModalClassNames // todo remove (as we already removed react-modal from deps)
     ]
   },
   externals: {

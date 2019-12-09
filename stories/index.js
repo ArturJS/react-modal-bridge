@@ -1,2 +1,2 @@
-import './basic-usage.jsx';
-import './complex-configuration.jsx';
+import './basic-usage.stories.jsx';
+import './complex-configuration.stories.jsx';
