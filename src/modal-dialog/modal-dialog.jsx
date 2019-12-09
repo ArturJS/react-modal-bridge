@@ -1,14 +1,14 @@
 // @flow
 import React, { memo, useState, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import BaseModal from './components/base-modal';
+// eslint-disable-next-line import/no-cycle
 import {
   MODAL_TYPES,
   Modal,
   modalService as defaultModalService
 } from '../modal.service.jsx';
 import { getClassNames } from '../utils';
-import { CustomType, StandardType } from './components';
+import { BaseModal, CustomType, StandardType } from './components'; // eslint-disable-line import/no-cycle
 import './styles';
 
 const defaultBackdropStyle = {

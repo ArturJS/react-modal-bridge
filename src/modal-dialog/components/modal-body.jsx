@@ -1,6 +1,6 @@
 // @flow
 import React, { memo } from 'react';
-import { Modal, ModalService } from '../../modal.service.jsx';
+import { Modal, ModalService } from '../../modal.service.jsx'; // eslint-disable-line import/no-cycle
 
 export const ModalBody = memo(
   ({ modal, modalService }: {| modal: Modal, modalService: ModalService |}) => (

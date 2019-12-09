@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { sleep } from './utils';
 import { createStore, Store } from './utils/store';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog } from './modal-dialog'; // eslint-disable-line import/no-cycle
 
 export const MODAL_TYPES = {
   error: 'ERROR_MODAL',

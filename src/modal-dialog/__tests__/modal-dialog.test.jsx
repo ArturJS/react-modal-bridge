@@ -3,14 +3,6 @@ import { mount } from 'enzyme';
 import { modalService } from '../../modal.service.jsx';
 import { ModalDialog } from '../modal-dialog.jsx';
 
-// eslint-disable-next-line react/prop-types
-jest.mock('react-modal', () => ({ children, ...props }) => (
-  <div className="react-modal-mock">
-    <pre className="props">{JSON.stringify(props, null, 2)}</pre>
-    {children}
-  </div>
-));
-
 jest.mock('react-transition-group', () => ({
   // eslint-disable-next-line react/prop-types
   CSSTransition: ({ children, ...props }) => (

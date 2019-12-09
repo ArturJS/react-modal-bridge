@@ -1,7 +1,7 @@
 // @flow
 import React, { memo } from 'react';
-import { MODAL_TYPES, Modal, ModalService } from '../../modal.service.jsx';
-import { ModalBody } from './modal-body.jsx';
+import { MODAL_TYPES, Modal, ModalService } from '../../modal.service.jsx'; // eslint-disable-line import/no-cycle
+import { ModalBody } from './modal-body.jsx'; // eslint-disable-line import/no-cycle
 
 export const StandardType = memo(
   ({
