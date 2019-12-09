@@ -1,6 +1,6 @@
 {
   "name": "react-modal-bridge",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "The bridge between lawless react-modal and strict opinionated modal API",
   "main": "build/index.js",
   "types": "build/index.d.ts",
