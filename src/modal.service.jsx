@@ -1,8 +1,11 @@
 // @flow
 
 import type { Element } from 'react';
-import sleep from './utils/sleep';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { sleep } from './utils';
 import { createStore, Store } from './utils/store';
+import { ModalDialog } from './modal-dialog'; // eslint-disable-line import/no-cycle
 
 export const MODAL_TYPES = {
   error: 'ERROR_MODAL',
@@ -10,8 +13,6 @@ export const MODAL_TYPES = {
   info: 'INFO_MODAL',
   custom: 'CUSTOM_MODAL'
 };
-// it's necessary to perform exit animation in modal-dialog.jsx
-export const CLOSE_DELAY_MS = 300;
 
 let modalId = 0;
 const generateId = () => {
@@ -27,25 +28,40 @@ type TCloseFn = (reason?: TReason) => void;
 
 type TDismissFn = (reason?: TReason) => void;
 
-type TBody =
-  | string
-  | (({|
-      // eslint-disable-next-line flowtype/no-weak-types
-      closeModal: (reason?: mixed) => void
-      // eslint-disable-next-line flowtype/no-weak-types
-    |}) => Element<any>);
+type TBodyFn = ({|
+  // eslint-disable-next-line flowtype/no-weak-types
+  closeModal?: (reason?: mixed) => void,
+  // eslint-disable-next-line flowtype/no-weak-types
+  dismissModal?: (reason?: mixed) => void
+  // eslint-disable-next-line flowtype/no-weak-types
+|}) => Element<any>;
+
+type TBody = string | TBodyFn;
 
 type TModalResult = {|
   result: Promise<TReason>,
-  close: TCloseFn
+  close: TCloseFn,
+  dismiss: TDismissFn
 |};
 
-type TModalConfig = {|
-  title?: string,
-  body: TBody,
+type TModalConfigBase = {|
   className?: string,
   throwCancelError?: boolean
 |};
+
+type TModalConfig =
+  | {|
+      title?: string,
+      body: TBody,
+      okText?: string,
+      cancelText?: string,
+      shouldCloseOnOverlayClick?: boolean,
+      ...TModalConfigBase
+    |}
+  | {|
+      component: TBodyFn,
+      ...TModalConfigBase
+    |};
 
 type TModalType = $Values<typeof MODAL_TYPES>;
 
@@ -57,12 +73,35 @@ type TModalOpenConfig = {|
 
 class CancelError extends Error {}
 
+type TBaseClassNames = {|
+  modalHeader?: string,
+  modalTitle?: string,
+  modalBody?: string,
+  modalContent?: string,
+  modalFooter?: string,
+  modalShow?: string,
+  btn?: string,
+  btnPrimary?: string,
+  btnDefault?: string,
+  btnOk?: string,
+  btnCancel?: string,
+  close?: string,
+  modal?: string,
+  baseModalContainer?: string,
+  overlay?: string,
+  content?: string,
+  portal?: string,
+  bodyOpen?: string
+|};
+
 export class Modal {
   id: number;
 
   title: string;
 
   body: TBody;
+
+  component: TBodyFn;
 
   type: TModalType;
 
@@ -80,21 +119,29 @@ export class Modal {
 
   throwCancelError: boolean;
 
+  okText: string;
+
+  cancelText: string;
+
   constructor({
     id,
     title = '',
     body,
+    component,
     type,
     close = () => {},
     dismiss = () => {},
     className = '',
     shouldCloseOnOverlayClick = true,
     noBackdrop = false,
-    throwCancelError = false
+    throwCancelError = false,
+    okText = 'Ok',
+    cancelText = 'Cancel'
   }: {|
     id: number,
     title: string,
     body: TBody,
+    component: TBodyFn,
     type: TModalType,
     close: TCloseFn,
     dismiss: TDismissFn,
@@ -103,17 +150,23 @@ export class Modal {
     noBackdrop: boolean,
     throwCancelError: boolean
   |}) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.type = type;
-    this.close = close;
-    this.dismiss = dismiss;
-    this.className = className;
-    this.shouldCloseOnOverlayClick = shouldCloseOnOverlayClick;
-    this.noBackdrop = noBackdrop;
-    this.isOpen = true;
-    this.throwCancelError = throwCancelError;
+    Object.assign(this, {
+      id,
+      title,
+      body,
+      component,
+      type,
+      close,
+      dismiss,
+      className,
+      shouldCloseOnOverlayClick,
+      noBackdrop,
+      isOpen: true,
+      throwCancelError,
+      okText,
+      cancelText,
+      CancelError
+    });
   }
 }
 
@@ -124,19 +177,76 @@ type TState = {|
 export class ModalService {
   _store: Store;
 
-  constructor() {
+  _closeDelayMs: number;
+
+  _mountRoot: string | HTMLElement | undefined;
+
+  _disableInlineStyles: boolean;
+
+  constructor({
+    closeDelayMs,
+    classNames,
+    baseClassNames,
+    mountRoot,
+    disableInlineStyles
+  }: {|
+    closeDelayMs?: number,
+    classNames?: {|
+      confirm?: string,
+      info?: string,
+      error?: string
+    |},
+    baseClassNames?: TBaseClassNames,
+    mountRoot?: string | HTMLElement,
+    disableInlineStyles?: boolean
+  |} = {}) {
+    // todo add runtime typecheck
     this._store = createStore({
       modals: []
     });
+    // it's necessary to perform exit animation in modal-dialog.jsx
+    this._closeDelayMs = closeDelayMs ?? 300;
+    this._classNames = {
+      confirm: 'rmb-modal-confirm',
+      info: 'rmb-modal-info',
+      error: 'rmb-modal-error',
+      ...(classNames ?? {})
+    };
+    this._baseClassNames = baseClassNames ?? {};
+    this._disableInlineStyles = disableInlineStyles ?? false;
+    this._mountModalIfNeeded(mountRoot);
   }
 
-  confirm({ title, body, className, throwCancelError }: TModalConfig) {
+  // eslint-disable-next-line class-methods-use-this
+  create(config) {
+    return new ModalService(config);
+  }
+
+  destroy(): void {
+    ReactDOM.unmountComponentAtNode(this._mountRoot);
+  }
+
+  confirm({
+    // prettier-ignore
+    title,
+    body,
+    className = '',
+    throwCancelError,
+    okText,
+    cancelText,
+    noBackdrop,
+    shouldCloseOnOverlayClick
+  }: TModalConfig) {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
+      cancelText,
       type: MODAL_TYPES.confirm,
-      className
+      className: `${this._classNames.confirm} ${className}`,
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -149,15 +259,20 @@ export class ModalService {
     title,
     body,
     className = '',
-    throwCancelError
+    throwCancelError,
+    okText,
+    noBackdrop = true,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
       type: MODAL_TYPES.info,
-      className: `rmb-modal-info ${className}`,
-      noBackdrop: true
+      className: `${this._classNames.info} ${className}`,
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -170,15 +285,20 @@ export class ModalService {
     title,
     body,
     className = '',
-    throwCancelError
+    throwCancelError,
+    okText,
+    noBackdrop = true,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
       throwCancelError,
+      okText,
       type: MODAL_TYPES.error,
-      className: `rmb-modal-error ${className}`,
-      noBackdrop: true
+      className: `${this._classNames.error} ${className}`,
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -190,15 +310,21 @@ export class ModalService {
   custom({
     title,
     body,
-    className,
-    throwCancelError
+    component,
+    className = '',
+    throwCancelError,
+    noBackdrop,
+    shouldCloseOnOverlayClick
   }: TModalConfig): TModalResult {
     const { result, close } = this._performOpen({
       title,
       body,
+      component,
       throwCancelError,
       type: MODAL_TYPES.custom,
-      className
+      className,
+      noBackdrop,
+      shouldCloseOnOverlayClick
     });
 
     return {
@@ -229,13 +355,38 @@ export class ModalService {
     await this._performClose({ id, reason, isClose: false });
   }
 
+  _mountModalIfNeeded(mountRoot: string | HTMLElement | undefined): void {
+    this._mountRoot =
+      typeof mountRoot === 'string'
+        ? document.querySelector(mountRoot)
+        : mountRoot;
+
+    if (this._mountRoot) {
+      ReactDOM.render(
+        <ModalDialog
+          hasSpecificMountRoot={!!this._mountRoot}
+          modalService={this}
+        />,
+        this._mountRoot
+      );
+    }
+  }
+
+  _getCloseDelayMs() {
+    return this._closeDelayMs;
+  }
+
   _performOpen({
     title = '',
     body,
+    component,
     type,
     className = '',
     throwCancelError = false,
-    noBackdrop = false
+    noBackdrop = false,
+    okText,
+    cancelText,
+    shouldCloseOnOverlayClick = true
   }: TModalOpenConfig): TModalResult {
     let close = () => {};
     let dismiss = () => {};
@@ -248,13 +399,16 @@ export class ModalService {
       id,
       title,
       body,
+      component,
       type,
       className,
       close,
       dismiss,
       noBackdrop,
-      shouldCloseOnOverlayClick: true,
-      throwCancelError
+      shouldCloseOnOverlayClick,
+      throwCancelError,
+      okText,
+      cancelText
     });
 
     this._store.setState(({ modals }: { modals: Array<Modal> }) => ({
@@ -275,7 +429,8 @@ export class ModalService {
 
     return {
       result,
-      close
+      close,
+      dismiss
     };
   }
 
@@ -299,7 +454,7 @@ export class ModalService {
       }
     });
 
-    await sleep(CLOSE_DELAY_MS);
+    await sleep(this._getCloseDelayMs());
 
     this._store.setState({ modals: [] });
   }
@@ -333,7 +488,7 @@ export class ModalService {
       modals: [...modals]
     });
 
-    await sleep(CLOSE_DELAY_MS);
+    await sleep(this._getCloseDelayMs());
 
     this._store.setState({
       modals: modals.filter(modal => modal.id !== id)

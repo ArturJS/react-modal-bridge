@@ -1,0 +1,137 @@
+@import "./utils/index";
+
+.dv-modal {
+  $c-modal-bg: $c-desert-storm;
+  $c-modal-shadow: $c-boulder;
+  $c-modal-close-color: $c-midnight-blue;
+  $c-modal-text: $c-mine-shaft;
+  $c-close-hover: $c-lynch;
+
+  font-family: sans-serif;
+  outline: 0;
+
+  * {
+    font-family: inherit;
+  }
+
+  .dv-modal-content {
+    position: relative; // to position close button
+    background-color: $c-modal-bg;
+    box-shadow: 0 3px 9px $c-modal-shadow;
+    outline: 0;
+    background-clip: padding-box;
+    padding: 40px;
+    pointer-events: auto;
+    width: auto;
+    min-width: $min-mobile-width;
+
+    @media (min-width: $tablet-width) {
+      box-shadow: 0 5px 15px $c-modal-shadow;
+    }
+  }
+
+  .dv-modal-header {
+    color: $c-modal-text;
+  }
+
+  .dv-modal-title {
+    color: $c-modal-text;
+    font-size: 24px;
+    font-weight: 300;
+    margin: 0;
+    text-align: center;
+  }
+
+  .dv-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: $c-modal-close-color;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    float: right;
+    font-size: 34px;
+    font-weight: 200;
+    line-height: 1em;
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:hover {
+      color: $c-close-hover;
+    }
+  }
+
+  .dv-modal-body {
+    padding: 40px 0;
+    color: $c-modal-text;
+    text-align: center;
+  }
+
+  .dv-modal-footer {
+    display: flex;
+    justify-content: space-around;
+
+    .dv-btn {
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, .3);
+      margin: 5px 0;
+      min-width: 5.5em;
+    }
+  }
+}
+
+.dv-modal-show {
+
+  &-appear {
+    opacity: .01;
+    transform: scale(.5);
+
+    &.dv-modal-show-appear-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: all 300ms ease-out;
+    }
+  }
+
+  &-exit {
+    opacity: 1;
+    transform: scale(1);
+
+    &.dv-modal-show-exit-active {
+      opacity: .01;
+      transform: scale(.5);
+      transition: all 300ms ease-out;
+    }
+  }
+}
+
+.dv-overlay {
+  z-index: 999;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 300ms ease-out;
+
+  @media (min-width: $tablet-width) {
+    align-items: center;
+  }
+
+  &--after-open {
+    background-color: rgba(255, 255, 255, .75);
+  }
+
+  &--before-close {
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
+
+.dv-body--open {
+  overflow-y: hidden;
+}

@@ -15,6 +15,7 @@
     "lint-js": "eslint --ext .js,.jsx --ignore-path .gitignore .",
     "lint-scss": "stylelint 'src/**/*.scss'",
     "lint-staged": "lint-staged",
+    "prettier": "prettier --write \"{src,stories}/**/*.{js,jsx}\"",
     "test": "jest --env=jsdom",
     "test-coverage": "jest --coverage --env=jsdom",
     "test-watch": "jest --watch --env=jsdom",
@@ -36,6 +37,7 @@
   },
   "homepage": "https://github.com/ArturJS/react-modal-bridge#readme",
   "dependencies": {
+    "core-js": "^2.6.5",
     "react-transition-group": "^2.6.0"
   },
   "devDependencies": {
@@ -55,6 +57,8 @@
     "@emotion/core": "^10.0.7",
     "@storybook/addon-actions": "^5.0.1",
     "@storybook/addon-links": "^5.0.1",
+    "@storybook/addon-storysource": "^5.2.8",
+    "@storybook/cli": "^5.0.6",
     "@storybook/react": "^5.0.1",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.3.1",
@@ -96,6 +100,7 @@
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.0",
+    "webpack-merge": "^4.2.2",
     "webpack-shell-plugin": "^0.5.0"
   },
   "lint-staged": {

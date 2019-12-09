@@ -1,3 +1,1 @@
-import Modal from './base-modal.jsx';
-
-export default Modal;
+export { default as BaseModal } from './base-modal.jsx';

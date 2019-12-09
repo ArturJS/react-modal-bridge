@@ -1,14 +1,14 @@
 // @flow
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import BaseModal from './components/base-modal';
+// eslint-disable-next-line import/no-cycle
 import {
   MODAL_TYPES,
-  CLOSE_DELAY_MS,
   Modal,
-  modalService
-} from '../modal.service';
-import { CustomType, StandardType } from './components';
+  modalService as defaultModalService
+} from '../modal.service.jsx';
+import { getClassNames } from '../utils';
+import { BaseModal, CustomType, StandardType } from './components'; // eslint-disable-line import/no-cycle
 import './styles';
 
 const defaultBackdropStyle = {
@@ -25,7 +25,7 @@ const noBackdropStyle = {
   }
 };
 
-const useModalsSubscription = () => {
+const useModalsSubscription = modalService => {
   const [modals, setModals] = useState([]);
 
   useEffect(() => {
@@ -37,67 +37,103 @@ const useModalsSubscription = () => {
     );
 
     return unsubscribe;
-  }, []);
+  }, [modalService]);
 
   return modals;
 };
 
-export const ModalDialog = memo(() => {
-  const dismiss = (id: number) => {
-    modalService.dismiss({
-      id
-    });
-  };
+export const ModalDialog = memo(
+  // eslint-disable-next-line react/prop-types
+  ({ hasSpecificMountRoot, modalService = defaultModalService }) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const cn = getClassNames(modalService._baseClassNames);
+    const dismiss = (id: number) => {
+      modalService.dismiss({ id });
+    };
+    // eslint-disable-next-line no-underscore-dangle
+    const closeDelayMs = modalService._getCloseDelayMs();
+    const modals = useModalsSubscription(modalService);
+    const baseModalMountRootRef = useRef();
+    const getBaseModalMountRoot = () => {
+      if (hasSpecificMountRoot) {
+        return baseModalMountRootRef.current;
+      }
 
-  const modals = useModalsSubscription();
-
-  return (
-    <>
-      {modals.map(modal => (
-        <BaseModal
-          key={modal.id}
-          isOpen={modal.isOpen}
-          onRequestClose={() => dismiss(modal.id)}
-          style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
-          className={`rmb-modal ${modal.className}`}
-          shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
-          closeTimeoutMS={CLOSE_DELAY_MS}
-          contentLabel=""
-          ariaHideApp={false}
+      return document.body;
+    };
+    const renderDefaultModalFrame = modal => (
+      <div className={cn.modalContent}>
+        <button
+          type="button"
+          className={cn.close}
+          onClick={() => dismiss(modal.id)}
         >
-          <TransitionGroup>
-            {modal.isOpen && (
-              <CSSTransition
-                key={modal.id}
-                appear
-                timeout={CLOSE_DELAY_MS}
-                classNames="rmb-modal-show"
-                mountOnEnter
-                unmountOnExit
-              >
-                <div className="rmb-modal-content">
-                  <button
-                    type="button"
-                    className="rmb-close"
-                    onClick={() => dismiss(modal.id)}
-                  >
-                    &times;
-                  </button>
-                  <div className="rmb-modal-header">
-                    <h3 className="rmb-modal-title">{modal.title}</h3>
-                  </div>
-                  {modal.type === MODAL_TYPES.custom && (
-                    <CustomType modal={modal} />
-                  )}
-                  {modal.type !== MODAL_TYPES.custom && (
-                    <StandardType modal={modal} />
-                  )}
-                </div>
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </BaseModal>
-      ))}
-    </>
-  );
-});
+          &times;
+        </button>
+        <div className={cn.modalHeader}>
+          <h3 className={cn.modalTitle}>{modal.title}</h3>
+        </div>
+        {modal.type === MODAL_TYPES.custom && (
+          <CustomType cn={cn} modal={modal} modalService={modalService} />
+        )}
+        {modal.type !== MODAL_TYPES.custom && (
+          <StandardType cn={cn} modal={modal} modalService={modalService} />
+        )}
+      </div>
+    );
+
+    return (
+      <>
+        {modals.map(modal => (
+          <BaseModal
+            key={modal.id}
+            isOpen={modal.isOpen}
+            onRequestClose={() => dismiss(modal.id)}
+            style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
+            className={`${cn.modal} ${modal.className}`}
+            shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
+            closeTimeoutMS={closeDelayMs}
+            contentLabel=""
+            ariaHideApp={false}
+            parentSelector={getBaseModalMountRoot}
+            disableInlineStyles={modalService._disableInlineStyles} // eslint-disable-line no-underscore-dangle
+            cn={cn}
+          >
+            <TransitionGroup>
+              {modal.isOpen && (
+                <CSSTransition
+                  key={modal.id}
+                  appear
+                  timeout={closeDelayMs}
+                  classNames={cn.modalShow}
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  {modal.component
+                    ? modal.component({
+                        closeModal: reason => {
+                          modalService.close({
+                            id: modal.id,
+                            reason
+                          });
+                        },
+                        dismissModal: reason => {
+                          modalService.dismiss({
+                            id: modal.id,
+                            reason
+                          });
+                        }
+                      })
+                    : renderDefaultModalFrame(modal)}
+                </CSSTransition>
+              )}
+            </TransitionGroup>
+          </BaseModal>
+        ))}
+        {hasSpecificMountRoot && (
+          <div className={cn.baseModalContainer} ref={baseModalMountRootRef} />
+        )}
+      </>
+    );
+  }
+);

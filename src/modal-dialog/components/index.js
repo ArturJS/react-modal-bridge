@@ -1,2 +1,3 @@
-export * from './custom-type.jsx';
-export * from './standard-type.jsx';
+export * from './base-modal';
+export * from './custom-type.jsx'; // eslint-disable-line import/no-cycle
+export * from './standard-type.jsx'; // eslint-disable-line import/no-cycle
