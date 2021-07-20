@@ -218,6 +218,11 @@ export class ModalService {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  isCancel(error) {
+    return error instanceof CancelError;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   create(config) {
     return new ModalService(config);
   }
