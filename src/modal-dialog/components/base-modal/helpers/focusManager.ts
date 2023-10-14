@@ -59,7 +59,9 @@ export function popWithoutFocus() {
   // eslint-disable-next-line no-unused-expressions
   focusLaterElements.length > 0 && focusLaterElements.pop();
 }
-export function setupScopedFocus(element) {
+export function setupScopedFocus(element?: HTMLElement) {
+  if (!element) return;
+
   modalElement = element;
 
   if (window.addEventListener) {

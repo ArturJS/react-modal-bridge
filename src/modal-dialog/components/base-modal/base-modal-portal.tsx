@@ -10,7 +10,16 @@ let ariaHiddenInstances = 0;
 
 export type ModalPortalProps = InferProps<typeof ModalPortal.propTypes>
 
-export default class ModalPortal extends Component<ModalPortalProps> {
+interface State {
+  isOpen: boolean;
+  beforeClose: boolean;
+  afterOpen: boolean;
+  closesAt?: number | null;
+}
+
+type Attributes = Record<string, string>;
+
+export default class ModalPortal extends Component<ModalPortalProps, State> {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     defaultStyles: PropTypes.shape({
@@ -64,10 +73,15 @@ export default class ModalPortal extends Component<ModalPortalProps> {
 
   shouldClose: boolean | null;
   moveFromContentToOverlay: boolean | null;
+  closeTimer?: number;
+  overlay?: HTMLDivElement;
+  content?: HTMLDivElement;
+  node?: HTMLDivElement;
 
   constructor(props: ModalPortalProps) {
     super(props);
     this.state = {
+      isOpen: false,
       afterOpen: false,
       beforeClose: false
     };
@@ -82,10 +96,10 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: ModalPortalProps, prevState: ModalPortalProps) {
     if (process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line react/destructuring-assignment
-      if (prevProps.cn.bodyOpen !== this.props.cn.bodyOpen) {
+      if (this.props.cn && prevProps.cn?.bodyOpen !== this.props.cn?.bodyOpen) {
         // eslint-disable-next-line no-console
         console.warn(
           "react-modal-bridge: 'bodyOpen' prop has been modified. " +
@@ -130,12 +144,12 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     clearTimeout(this.closeTimer);
   }
 
-  setOverlayRef = (overlay) => {
+  setOverlayRef = (overlay: HTMLDivElement) => {
     this.overlay = overlay;
     // eslint-disable-next-line no-unused-expressions, react/destructuring-assignment
     this.props.overlayRef && this.props.overlayRef(overlay);
   };
-  setContentRef = (content) => {
+  setContentRef = (content: HTMLDivElement) => {
     this.content = content;
     // eslint-disable-next-line no-unused-expressions, react/destructuring-assignment
     this.props.contentRef && this.props.contentRef(content);
@@ -144,7 +158,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     const { appElement, ariaHideApp, htmlOpenClassName, cn } = this.props;
     // Remove classes.
     // eslint-disable-next-line no-unused-expressions
-    cn.bodyOpen && classList.remove(document.body, cn.bodyOpen);
+    cn?.bodyOpen && classList.remove(document.body, cn.bodyOpen);
     // eslint-disable-next-line no-unused-expressions
     htmlOpenClassName &&
       classList.remove(
@@ -216,8 +230,9 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     }
   };
   close = () => {
-    // eslint-disable-next-line react/destructuring-assignment
-    if (this.props.closeTimeoutMS > 0) {
+    const { closeTimeoutMS } = this.props
+
+    if (closeTimeoutMS && closeTimeoutMS > 0) {
       this.closeWithTimeout();
     } else {
       this.closeWithoutTimeout();
@@ -227,18 +242,26 @@ export default class ModalPortal extends Component<ModalPortalProps> {
   focusContent = () =>
     this.content && !this.contentHasFocus() && this.content.focus();
   closeWithTimeout = () => {
-    // eslint-disable-next-line react/destructuring-assignment
-    const closesAt = Date.now() + this.props.closeTimeoutMS;
+    const { closeTimeoutMS } = this.props;
+    const closesAt = closeTimeoutMS
+      ? Date.now() + closeTimeoutMS
+      : 0;
+
     this.setState(
       {
         beforeClose: true,
         closesAt
       },
       () => {
-        this.closeTimer = setTimeout(
-          this.closeWithoutTimeout, // eslint-disable-next-line react/destructuring-assignment
-          this.state.closesAt - Date.now()
-        );
+        const { closesAt } = this.state;
+
+        if (closesAt) {
+          // @ts-ignore
+          this.closeTimer = setTimeout(
+            this.closeWithoutTimeout, // eslint-disable-next-line react/destructuring-assignment
+            closesAt - Date.now()
+          );
+        }
       }
     );
   };
@@ -253,7 +276,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
       this.afterClose
     );
   };
-  handleKeyDown = (event) => {
+  handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.keyCode === TAB_KEY) {
       scopeTab(this.content, event);
     }
@@ -265,7 +288,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
       this.requestClose(event);
     }
   };
-  handleOverlayOnClick = (event) => {
+  handleOverlayOnClick: React.MouseEventHandler = (event) => {
     if (this.shouldClose === null) {
       this.shouldClose = true;
     }
@@ -285,7 +308,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
   handleContentOnMouseUp = () => {
     this.shouldClose = false;
   };
-  handleOverlayOnMouseDown = (event) => {
+  handleOverlayOnMouseDown: React.MouseEventHandler = (event) => {
     const { shouldCloseOnOverlayClick } = this.props;
 
     if (!shouldCloseOnOverlayClick && event.target === this.overlay) {
@@ -298,10 +321,14 @@ export default class ModalPortal extends Component<ModalPortalProps> {
   handleContentOnMouseDown = () => {
     this.shouldClose = false;
   };
-  requestClose = (event) => {
+  requestClose = (
+    event: 
+      | React.MouseEvent<Element, MouseEvent>
+      | React.KeyboardEvent
+  ) => {
     if (this.ownerHandlesClose()) {
       const { onRequestClose } = this.props;
-      onRequestClose(event);
+      onRequestClose?.(event);
     }
   };
   // eslint-disable-next-line react/destructuring-assignment
@@ -310,9 +337,17 @@ export default class ModalPortal extends Component<ModalPortalProps> {
   shouldBeClosed = () => !this.state.isOpen && !this.state.beforeClose;
   contentHasFocus = () =>
     document.activeElement === this.content ||
-    this.content.contains(document.activeElement);
-  buildClassName = (which, additional) => {
-    const base = this.props.cn[which]; // eslint-disable-line react/destructuring-assignment
+    this.content?.contains(document.activeElement);
+  buildClassName = (
+    which: 'content' | 'overlay' | 'portal' | 'bodyOpen',
+    additional?: {
+      base?: string;
+      afterOpen?: string;
+      beforeClose?: string;
+    } | string,
+  ): string => {
+    const { cn } = this.props
+    const base = cn ? cn[which] : '';
 
     const classNames =
       typeof additional === 'object'
@@ -322,7 +357,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
             afterOpen: `${base}-after-open`,
             beforeClose: `${base}-before-close`
           };
-    let className = classNames.base;
+    let className = classNames.base as string;
     const { afterOpen, beforeClose } = this.state;
 
     if (afterOpen) {
@@ -337,9 +372,9 @@ export default class ModalPortal extends Component<ModalPortalProps> {
       ? `${className} ${additional}`
       : className;
   };
-  attributesFromObject = (prefix, items) =>
-    Object.keys(items).reduce((acc, name) => {
-      acc[`${prefix}-${name}`] = items[name];
+  attributesFromObject = (prefix: string, items: Attributes) =>
+    Object.keys(items).reduce((acc: Attributes, name) => {
+      acc[`${prefix}-${name}`] = items[name] as string;
       return acc;
     }, {});
 
@@ -347,7 +382,7 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     const { appElement, ariaHideApp, htmlOpenClassName, cn } = this.props;
     // Add classes.
     // eslint-disable-next-line no-unused-expressions
-    cn.bodyOpen && classList.add(document.body, cn.bodyOpen);
+    cn?.bodyOpen && classList.add(document.body, cn.bodyOpen);
     // eslint-disable-next-line no-unused-expressions
     htmlOpenClassName &&
       classList.add(
@@ -381,24 +416,24 @@ export default class ModalPortal extends Component<ModalPortalProps> {
     return this.shouldBeClosed() ? null : (
       <div
         ref={this.setOverlayRef}
-        className={this.buildClassName('overlay', overlayClassName)}
-        style={{ ...overlayStyles, ...style.overlay }}
+        className={this.buildClassName('overlay', overlayClassName ?? '')}
+        style={{ ...overlayStyles, ...style?.overlay }}
         onClick={this.handleOverlayOnClick}
         onMouseDown={this.handleOverlayOnMouseDown}>
         <div
-          id={id}
+          id={id ?? undefined}
           ref={this.setContentRef}
-          style={{ ...contentStyles, ...style.content }}
-          className={this.buildClassName('content', className)}
-          tabIndex="-1"
+          style={{ ...contentStyles, ...style?.content }}
+          className={this.buildClassName('content', className ?? '')}
+          tabIndex={-1}
           onKeyDown={this.handleKeyDown}
           onMouseDown={this.handleContentOnMouseDown}
           onMouseUp={this.handleContentOnMouseUp}
           onClick={this.handleContentOnClick}
-          role={role}
-          aria-label={contentLabel}
-          {...this.attributesFromObject('aria', aria || {})}
-          {...this.attributesFromObject('data', data || {})}>
+          role={role ?? undefined}
+          aria-label={contentLabel ?? undefined}
+          {...this.attributesFromObject('aria', (aria as Attributes) || {})}
+          {...this.attributesFromObject('data', (data as Attributes) || {})}>
           {children}
         </div>
       </div>

@@ -7,7 +7,6 @@ export const ModalBody = memo(
       {typeof modal.body === 'string'
         ? modal.body
         : modal.body({
-            // eslint-disable-next-line flowtype/no-weak-types
             closeModal: (reason?: unknown) => {
               modalService.close({
                 id: modal.id,

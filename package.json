@@ -20,7 +20,8 @@
     "test-coverage": "jest --coverage --env=jsdom",
     "test-watch": "jest --watch --env=jsdom",
     "storybook": "start-storybook -p 6006 -c .storybook",
-    "build-storybook": "rimraf storybook-static && build-storybook"
+    "build-storybook": "rimraf storybook-static && build-storybook",
+    "ts": "npx tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.7",
