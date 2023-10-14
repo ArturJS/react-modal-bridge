@@ -1,15 +1,9 @@
-// @flow
-
 import Observer from './observer';
-
 // eslint-disable-next-line flowtype/no-weak-types
-type TState = Object;
-
+type TState = Record<string, any>;
 type TNextStateOrUpdateFn = TState | ((prevState: TState) => TState);
-
 export class Store {
   _state: TState;
-
   _observer: Observer;
 
   constructor(initialState: TState) {
@@ -45,20 +39,15 @@ export class Store {
     if (typeof nextStateOrUpdateFn === 'function') {
       const updateFn = nextStateOrUpdateFn;
       const nextState = updateFn(this.getState());
-
       return nextState;
     }
-    const nextState = nextStateOrUpdateFn;
 
+    const nextState = nextStateOrUpdateFn;
     return nextState;
   }
 
   _mergeNextState(nextState: TState) {
-    this._state = {
-      ...this._state,
-      ...nextState
-    };
+    this._state = { ...this._state, ...nextState };
   }
 }
-
 export const createStore = (initialState: TState) => new Store(initialState);

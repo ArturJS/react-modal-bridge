@@ -1,8 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { modalService } from '../../modal.service.jsx';
-import { ModalDialog } from '../modal-dialog.jsx';
-
+import { modalService } from '../../modal.service';
+import { ModalDialog } from '../modal-dialog';
 jest.mock('react-transition-group', () => ({
   // eslint-disable-next-line react/prop-types
   CSSTransition: ({ children, ...props }) => (
@@ -20,12 +19,11 @@ jest.mock('react-transition-group', () => ({
   )
 }));
 
-const flushPromises = () => new Promise(resolve => setImmediate(resolve));
+const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
 
 // TODO use following guides to fix these tests
 // https://github.com/threepointone/react-act-examples
 // https://github.com/facebook/react/issues/14769#issuecomment-462528230
-
 // eslint-disable-next-line jest/no-disabled-tests
 describe('<ModalDialog />', () => {
   /**
@@ -34,6 +32,7 @@ describe('<ModalDialog />', () => {
    * See also https://github.com/facebook/react/issues/14769#issuecomment-514589856
    */
   const consoleError = console.error; // eslint-disable-line no-console
+
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation((...args) => {
       if (
@@ -45,41 +44,36 @@ describe('<ModalDialog />', () => {
       }
     });
   });
-
   describe('type `confirm`', () => {
     afterEach(async () => {
       await modalService.closeAll();
     });
-
     it('should contain modal content', () => {
-      modalService.confirm({ title: 'Confirm title', body: 'Confirm body' });
-
+      modalService.confirm({
+        title: 'Confirm title',
+        body: 'Confirm body'
+      });
       const wrapper = mount(<ModalDialog />);
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
     });
-
     it('should be closed', async () => {
       let isClosed = false;
-
       modalService
-        .confirm({ title: 'Confirm title', body: 'Confirm body' })
+        .confirm({
+          title: 'Confirm title',
+          body: 'Confirm body'
+        })
         .result.then(() => {
           isClosed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-btn-ok').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isClosed).toBe(true);
     });
-
     it('should be dismissed by clicking [Cancel] button', async () => {
       let isDismissed = false;
-
       modalService
         .confirm({
           title: 'Confirm title',
@@ -89,19 +83,14 @@ describe('<ModalDialog />', () => {
         .result.catch(() => {
           isDismissed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-btn-cancel').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isDismissed).toBe(true);
     });
-
     it('should be dismissed by clicking [X] button', async () => {
       let isDismissed = false;
-
       modalService
         .confirm({
           title: 'Confirm title',
@@ -111,51 +100,43 @@ describe('<ModalDialog />', () => {
         .result.catch(() => {
           isDismissed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-close').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isDismissed).toBe(true);
     });
   });
-
   describe('type `info`', () => {
     afterEach(async () => {
       await modalService.closeAll();
     });
-
     it('should contain modal content', () => {
-      modalService.info({ title: 'Info title', body: 'Info body' });
-
+      modalService.info({
+        title: 'Info title',
+        body: 'Info body'
+      });
       const wrapper = mount(<ModalDialog />);
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
     });
-
     it('should be closed', async () => {
       let isClosed = false;
-
       modalService
-        .info({ title: 'Info title', body: 'Info body' })
+        .info({
+          title: 'Info title',
+          body: 'Info body'
+        })
         .result.then(() => {
           isClosed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-btn-ok').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isClosed).toBe(true);
     });
-
     it('should be dismissed', async () => {
       let isDismissed = false;
-
       modalService
         .info({
           title: 'Info title',
@@ -165,51 +146,43 @@ describe('<ModalDialog />', () => {
         .result.catch(() => {
           isDismissed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-close').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isDismissed).toBe(true);
     });
   });
-
   describe('type `error`', () => {
     afterEach(async () => {
       await modalService.closeAll();
     });
-
     it('should contain modal content', () => {
-      modalService.error({ title: 'Error title', body: 'Error body' });
-
+      modalService.error({
+        title: 'Error title',
+        body: 'Error body'
+      });
       const wrapper = mount(<ModalDialog />);
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
     });
-
     it('should be closed', async () => {
       let isClosed = false;
-
       modalService
-        .error({ title: 'Error title', body: 'Error body' })
+        .error({
+          title: 'Error title',
+          body: 'Error body'
+        })
         .result.then(() => {
           isClosed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-btn-ok').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isClosed).toBe(true);
     });
-
     it('should be dismissed', async () => {
       let isDismissed = false;
-
       modalService
         .error({
           title: 'Error title',
@@ -219,22 +192,18 @@ describe('<ModalDialog />', () => {
         .result.catch(() => {
           isDismissed = true;
         });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-close').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isDismissed).toBe(true);
     });
   });
-
   describe('type `custom`', () => {
     const openCustomModal = (additionalParams = {}) => {
       return modalService.custom({
         title: 'Custom title',
-        body: props => (
+        body: (props) => (
           <div className="custom-body">
             <div className="props-for-custom-component">
               {JSON.stringify(
@@ -251,10 +220,8 @@ describe('<ModalDialog />', () => {
             </div>
             <button
               type="button"
-              className="btn-close"
-              // eslint-disable-next-line react/prop-types, react/destructuring-assignment
-              onClick={props.closeModal}
-            >
+              className="btn-close" // eslint-disable-next-line react/prop-types, react/destructuring-assignment
+              onClick={props.closeModal}>
               Close Modal
             </button>
           </div>
@@ -266,43 +233,35 @@ describe('<ModalDialog />', () => {
     afterEach(async () => {
       await modalService.closeAll();
     });
-
     it('should contain modal content', () => {
-      modalService.confirm({ title: 'Confirm title', body: 'Confirm body' });
-
+      modalService.confirm({
+        title: 'Confirm title',
+        body: 'Confirm body'
+      });
       const wrapper = mount(<ModalDialog />);
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(true);
     });
-
     it('should be closed', async () => {
       let isClosed = false;
-
       openCustomModal().result.then(() => {
         isClosed = true;
       });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.btn-close').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isClosed).toBe(true);
     });
-
     it('should be dismissed by clicking [X] button', async () => {
       let isDismissed = false;
-
-      openCustomModal({ throwCancelError: true }).result.catch(() => {
+      openCustomModal({
+        throwCancelError: true
+      }).result.catch(() => {
         isDismissed = true;
       });
-
       const wrapper = mount(<ModalDialog />);
-
       wrapper.find('.rmb-close').simulate('click');
       await flushPromises();
-
       expect(wrapper.find('.rmb-modal-content').exists()).toBe(false);
       expect(isDismissed).toBe(true);
     });
