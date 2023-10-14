@@ -1,24 +1,25 @@
-// @flow
 import React, { memo } from 'react';
-import { MODAL_TYPES, Modal, ModalService } from '../../modal.service.jsx'; // eslint-disable-line import/no-cycle
-import { ModalBody } from './modal-body.jsx'; // eslint-disable-line import/no-cycle
+import { MODAL_TYPES, Modal, ModalService } from '../../modal.service'; // eslint-disable-line import/no-cycle
+
+import { ModalBody } from './modal-body'; // eslint-disable-line import/no-cycle
 
 export const StandardType = memo(
   ({
     cn,
     modal,
     modalService
-  }: {|
+  }: {
     // eslint-disable-next-line flowtype/no-weak-types
-    cn: Object,
-    modal: Modal,
-    modalService: ModalService
-  |}) => {
+    cn: Record<string, any>;
+    modal: Modal;
+    modalService: ModalService;
+  }) => {
     const close = (id: number) => {
       modalService.close({
         id
       });
     };
+
     const dismiss = (id: number) => {
       modalService.dismiss({
         id
@@ -34,16 +35,14 @@ export const StandardType = memo(
           <button
             className={`${cn.btn} ${cn.btnPrimary} ${cn.btnOk}`}
             type="button"
-            onClick={() => close(modal.id)}
-          >
+            onClick={() => close(modal.id)}>
             {modal.okText}
           </button>
           {modal.type === MODAL_TYPES.confirm && (
             <button
               className={`${cn.btn} ${cn.btnDefault} ${cn.btnCancel}`}
               type="button"
-              onClick={() => dismiss(modal.id)}
-            >
+              onClick={() => dismiss(modal.id)}>
               {modal.cancelText}
             </button>
           )}

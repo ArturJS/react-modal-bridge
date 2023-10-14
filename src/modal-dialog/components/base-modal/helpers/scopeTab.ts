@@ -1,5 +1,4 @@
 import findTabbable from './tabbable';
-
 export default function scopeTab(node, event) {
   const tabbable = findTabbable(node);
 
@@ -10,7 +9,6 @@ export default function scopeTab(node, event) {
   }
 
   let target;
-
   const { shiftKey } = event;
   const head = tabbable[0];
   const tail = tabbable[tabbable.length - 1];
@@ -52,11 +50,9 @@ export default function scopeTab(node, event) {
     checkSafari != null &&
     checkSafari[1] !== 'Chrome' &&
     /\biPod\b|\biPad\b/g.exec(navigator.userAgent) == null;
-
   // If we are not in safari desktop, let the browser control
   // the focus
   if (!isSafariDesktop) return;
-
   let x = tabbable.indexOf(document.activeElement);
 
   if (x > -1) {
@@ -75,6 +71,5 @@ export default function scopeTab(node, event) {
   }
 
   event.preventDefault();
-
   target.focus();
 }

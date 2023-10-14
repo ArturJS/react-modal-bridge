@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
-import ModalPortal from './base-modal-portal.jsx';
+import ModalPortal from './base-modal-portal';
 import * as ariaAppHider from './helpers/ariaAppHider';
 
 function getParentElement(parentSelector) {
@@ -41,6 +41,7 @@ class Modal extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
+
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
     htmlOpenClassName: PropTypes.string,
     className: PropTypes.oneOfType([
@@ -84,8 +85,8 @@ class Modal extends Component {
     disableInlineStyles: PropTypes.bool
     /* eslint-disable react/require-default-props, react/forbid-prop-types */
   };
-  /* eslint-enable react/no-unused-prop-types */
 
+  /* eslint-enable react/no-unused-prop-types */
   static defaultProps = {
     role: 'dialog',
     ariaHideApp: true,
@@ -101,7 +102,6 @@ class Modal extends Component {
   componentDidMount() {
     // eslint-disable-next-line react/destructuring-assignment
     this.node.className = this.props.cn.portal;
-
     // eslint-disable-next-line react/destructuring-assignment
     const parent = getParentElement(this.props.parentSelector);
     parent.appendChild(this.node);
@@ -116,6 +116,7 @@ class Modal extends Component {
     }
 
     const { prevParent, nextParent } = snapshot;
+
     if (nextParent !== prevParent) {
       prevParent.removeChild(this.node);
       nextParent.appendChild(this.node);
@@ -124,7 +125,6 @@ class Modal extends Component {
 
   componentWillUnmount() {
     if (!this.node || !this.portal) return;
-
     const { state } = this.portal;
     const now = Date.now();
     const { closeTimeoutMS } = this.props;
@@ -148,12 +148,16 @@ class Modal extends Component {
     const prevParent = getParentElement(prevProps.parentSelector);
     // eslint-disable-next-line react/destructuring-assignment
     const nextParent = getParentElement(this.props.parentSelector);
-    return { prevParent, nextParent };
+    return {
+      prevParent,
+      nextParent
+    };
   }
 
   removePortal = () => {
     // eslint-disable-next-line react/destructuring-assignment
     const parent = getParentElement(this.props.parentSelector);
+
     if (parent) {
       parent.removeChild(this.node);
     } else {
@@ -165,18 +169,14 @@ class Modal extends Component {
       );
     }
   };
-
-  portalRef = ref => {
+  portalRef = (ref) => {
     this.portal = ref;
   };
-
   getDefaultStyles = () => {
     const { disableInlineStyles } = this.props;
-
     return disableInlineStyles ? null : defaultStyles;
   };
-
-  renderPortal = props => {
+  renderPortal = (props) => {
     const portal = createPortal(
       this,
       <ModalPortal defaultStyles={this.getDefaultStyles()} {...props} />,

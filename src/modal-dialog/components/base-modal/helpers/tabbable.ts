@@ -9,31 +9,29 @@
  *
  * http://api.jqueryui.com/category/ui-core/
  */
-
 const tabbableNode = /input|select|textarea|button|object/;
 
 function hidesContents(element) {
   const zeroSize = element.offsetWidth <= 0 && element.offsetHeight <= 0;
-
   // If the node is empty, this is good enough
   if (zeroSize && !element.innerHTML) return true;
-
   // Otherwise we need to check some styles
   const style = window.getComputedStyle(element);
   return zeroSize
-    ? style.getPropertyValue('overflow') !== 'visible' ||
-        // if 'overflow: visible' set, check if there is actually any overflow
+    ? style.getPropertyValue('overflow') !== 'visible' || // if 'overflow: visible' set, check if there is actually any overflow
         (element.scrollWidth <= 0 && element.scrollHeight <= 0)
     : style.getPropertyValue('display') === 'none';
 }
 
 function visible(element) {
   let parentElement = element;
+
   while (parentElement) {
     if (parentElement === document.body) break;
     if (hidesContents(parentElement)) return false;
     parentElement = parentElement.parentNode;
   }
+
   return true;
 }
 
@@ -49,6 +47,7 @@ function tabbable(element) {
   let tabIndex = element.getAttribute('tabindex');
   if (tabIndex === null) tabIndex = undefined;
   const isTabIndexNaN = isNaN(tabIndex); // eslint-disable-line no-restricted-globals
+
   return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
 }
 

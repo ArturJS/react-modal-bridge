@@ -1,5 +1,3 @@
-// @flow
-
 import type { Element } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -13,114 +11,86 @@ export const MODAL_TYPES = {
   info: 'INFO_MODAL',
   custom: 'CUSTOM_MODAL'
 };
-
 let modalId = 0;
+
 const generateId = () => {
   modalId += 1;
-
   return modalId;
 };
 
 // eslint-disable-next-line flowtype/no-weak-types
-type TReason = mixed;
-
+type TReason = unknown;
 type TCloseFn = (reason?: TReason) => void;
-
 type TDismissFn = (reason?: TReason) => void;
-
-type TBodyFn = ({|
+type TBodyFn = (arg0: {
   // eslint-disable-next-line flowtype/no-weak-types
-  closeModal?: (reason?: mixed) => void,
+  closeModal?: (reason?: unknown) => void;
   // eslint-disable-next-line flowtype/no-weak-types
-  dismissModal?: (reason?: mixed) => void
-  // eslint-disable-next-line flowtype/no-weak-types
-|}) => Element<any>;
-
+  dismissModal?: (reason?: unknown) => void; // eslint-disable-next-line flowtype/no-weak-types
+}) => Element<any>;
 type TBody = string | TBodyFn;
-
-type TModalResult = {|
-  result: Promise<TReason>,
-  close: TCloseFn,
-  dismiss: TDismissFn
-|};
-
-type TModalConfigBase = {|
-  className?: string,
-  throwCancelError?: boolean
-|};
-
+type TModalResult = {
+  result: Promise<TReason>;
+  close: TCloseFn;
+  dismiss: TDismissFn;
+};
+type TModalConfigBase = {
+  className?: string;
+  throwCancelError?: boolean;
+};
 type TModalConfig =
-  | {|
-      title?: string,
-      body: TBody,
-      okText?: string,
-      cancelText?: string,
-      shouldCloseOnOverlayClick?: boolean,
-      ...TModalConfigBase
-    |}
-  | {|
-      component: TBodyFn,
-      ...TModalConfigBase
-    |};
-
-type TModalType = $Values<typeof MODAL_TYPES>;
-
-type TModalOpenConfig = {|
-  ...TModalConfig,
-  type: TModalType,
-  noBackdrop?: boolean
-|};
+  | (TModalConfigBase & {
+      title?: string;
+      body: TBody;
+      okText?: string;
+      cancelText?: string;
+      shouldCloseOnOverlayClick?: boolean;
+    })
+  | (TModalConfigBase & {
+      component: TBodyFn;
+    });
+type TModalType = typeof MODAL_TYPES[keyof typeof MODAL_TYPES];
+type TModalOpenConfig = TModalConfig & {
+  type: TModalType;
+  noBackdrop?: boolean;
+};
 
 class CancelError extends Error {}
 
-type TBaseClassNames = {|
-  modalHeader?: string,
-  modalTitle?: string,
-  modalBody?: string,
-  modalContent?: string,
-  modalFooter?: string,
-  modalShow?: string,
-  btn?: string,
-  btnPrimary?: string,
-  btnDefault?: string,
-  btnOk?: string,
-  btnCancel?: string,
-  close?: string,
-  modal?: string,
-  baseModalContainer?: string,
-  overlay?: string,
-  content?: string,
-  portal?: string,
-  bodyOpen?: string
-|};
-
+type TBaseClassNames = {
+  modalHeader?: string;
+  modalTitle?: string;
+  modalBody?: string;
+  modalContent?: string;
+  modalFooter?: string;
+  modalShow?: string;
+  btn?: string;
+  btnPrimary?: string;
+  btnDefault?: string;
+  btnOk?: string;
+  btnCancel?: string;
+  close?: string;
+  modal?: string;
+  baseModalContainer?: string;
+  overlay?: string;
+  content?: string;
+  portal?: string;
+  bodyOpen?: string;
+};
 export class Modal {
   id: number;
-
   title: string;
-
   body: TBody;
-
   component: TBodyFn;
-
   type: TModalType;
-
   close: TCloseFn;
-
   dismiss: TDismissFn;
-
   className: string;
-
-  shouldCloseOnOverlayClick: ?boolean;
-
+  shouldCloseOnOverlayClick: boolean | null | undefined;
   noBackdrop: boolean;
-
   isOpen: boolean;
-
   throwCancelError: boolean;
-
   okText: string;
-
   cancelText: string;
 
   constructor({
@@ -137,19 +107,19 @@ export class Modal {
     throwCancelError = false,
     okText = 'Ok',
     cancelText = 'Cancel'
-  }: {|
-    id: number,
-    title: string,
-    body: TBody,
-    component: TBodyFn,
-    type: TModalType,
-    close: TCloseFn,
-    dismiss: TDismissFn,
-    className: string,
-    shouldCloseOnOverlayClick?: boolean,
-    noBackdrop: boolean,
-    throwCancelError: boolean
-  |}) {
+  }: {
+    id: number;
+    title: string;
+    body: TBody;
+    component: TBodyFn;
+    type: TModalType;
+    close: TCloseFn;
+    dismiss: TDismissFn;
+    className: string;
+    shouldCloseOnOverlayClick?: boolean;
+    noBackdrop: boolean;
+    throwCancelError: boolean;
+  }) {
     Object.assign(this, {
       id,
       title,
@@ -169,18 +139,13 @@ export class Modal {
     });
   }
 }
-
-type TState = {|
-  modals: Array<Modal>
-|};
-
+type TState = {
+  modals: Array<Modal>;
+};
 export class ModalService {
   _store: Store;
-
   _closeDelayMs: number;
-
   _mountRoot: string | HTMLElement | undefined;
-
   _disableInlineStyles: boolean;
 
   constructor({
@@ -189,17 +154,17 @@ export class ModalService {
     baseClassNames,
     mountRoot,
     disableInlineStyles
-  }: {|
-    closeDelayMs?: number,
-    classNames?: {|
-      confirm?: string,
-      info?: string,
-      error?: string
-    |},
-    baseClassNames?: TBaseClassNames,
-    mountRoot?: string | HTMLElement,
-    disableInlineStyles?: boolean
-  |} = {}) {
+  }: {
+    closeDelayMs?: number;
+    classNames?: {
+      confirm?: string;
+      info?: string;
+      error?: string;
+    };
+    baseClassNames?: TBaseClassNames;
+    mountRoot?: string | HTMLElement;
+    disableInlineStyles?: boolean;
+  } = {}) {
     // todo add runtime typecheck
     this._store = createStore({
       modals: []
@@ -214,6 +179,7 @@ export class ModalService {
     };
     this._baseClassNames = baseClassNames ?? {};
     this._disableInlineStyles = disableInlineStyles ?? false;
+
     this._mountModalIfNeeded(mountRoot);
   }
 
@@ -340,24 +306,37 @@ export class ModalService {
 
   subscribe(callback: (state: TState) => void): () => void {
     callback(this._store.getState());
-
     return this._store.subscribe(callback);
   }
 
   async closeAll(reason?: TReason) {
-    await this._performCloseAll({ reason, isClose: true });
+    await this._performCloseAll({
+      reason,
+      isClose: true
+    });
   }
 
   async dismissAll(reason?: TReason) {
-    await this._performCloseAll({ reason, isClose: false });
+    await this._performCloseAll({
+      reason,
+      isClose: false
+    });
   }
 
-  async close({ id, reason }: { id: number, reason?: TReason }) {
-    await this._performClose({ id, reason, isClose: true });
+  async close({ id, reason }: { id: number; reason?: TReason }) {
+    await this._performClose({
+      id,
+      reason,
+      isClose: true
+    });
   }
 
-  async dismiss({ id, reason }: { id: number, reason?: TReason }) {
-    await this._performClose({ id, reason, isClose: false });
+  async dismiss({ id, reason }: { id: number; reason?: TReason }) {
+    await this._performClose({
+      id,
+      reason,
+      isClose: false
+    });
   }
 
   _mountModalIfNeeded(mountRoot: string | HTMLElement | undefined): void {
@@ -394,7 +373,9 @@ export class ModalService {
     shouldCloseOnOverlayClick = true
   }: TModalOpenConfig): TModalResult {
     let close = () => {};
+
     let dismiss = () => {};
+
     const proxyResult = new Promise((resolve, reject) => {
       close = resolve;
       dismiss = reject;
@@ -422,16 +403,19 @@ export class ModalService {
 
     const result = proxyResult
       .then((reason?: TReason) => {
-        this.close({ id, reason });
-
+        this.close({
+          id,
+          reason
+        });
         return reason;
       })
-      .catch((reason?: TReason = new CancelError()) => {
-        this.dismiss({ id, reason });
-
+      .catch((reason: TReason = new CancelError()) => {
+        this.dismiss({
+          id,
+          reason
+        });
         throw reason;
       });
-
     return {
       result,
       close,
@@ -443,12 +427,16 @@ export class ModalService {
     reason,
     isClose
   }: {
-    reason?: TReason,
-    isClose: boolean
+    reason?: TReason;
+    isClose: boolean;
   }) {
-    const { modals }: { modals: Array<Modal> } = this._store.getState();
+    const {
+      modals
+    }: {
+      modals: Array<Modal>;
+    } = this._store.getState();
 
-    modals.forEach(modal => {
+    modals.forEach((modal) => {
       // eslint-disable-next-line no-param-reassign
       modal.isOpen = false;
 
@@ -458,10 +446,11 @@ export class ModalService {
         modal.dismiss(reason);
       }
     });
-
     await sleep(this._getCloseDelayMs());
 
-    this._store.setState({ modals: [] });
+    this._store.setState({
+      modals: []
+    });
   }
 
   async _performClose({
@@ -469,12 +458,17 @@ export class ModalService {
     reason,
     isClose
   }: {
-    id: number,
-    reason?: TReason,
-    isClose: boolean
+    id: number;
+    reason?: TReason;
+    isClose: boolean;
   }) {
-    const { modals }: { modals: Array<Modal> } = this._store.getState();
-    const modalToClose = modals.find(modal => modal.id === id);
+    const {
+      modals
+    }: {
+      modals: Array<Modal>;
+    } = this._store.getState();
+
+    const modalToClose = modals.find((modal) => modal.id === id);
 
     if (!modalToClose) {
       return;
@@ -496,9 +490,8 @@ export class ModalService {
     await sleep(this._getCloseDelayMs());
 
     this._store.setState({
-      modals: modals.filter(modal => modal.id !== id)
+      modals: modals.filter((modal) => modal.id !== id)
     });
   }
 }
-
 export const modalService = new ModalService();

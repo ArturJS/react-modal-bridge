@@ -12,6 +12,7 @@ const incrementReference = (poll, className) => {
     // eslint-disable-next-line no-param-reassign
     poll[className] = 0;
   }
+
   // eslint-disable-next-line no-param-reassign
   poll[className] += 1;
   return className;
@@ -28,6 +29,7 @@ const decrementReference = (poll, className) => {
     // eslint-disable-next-line no-param-reassign
     poll[className] -= 1;
   }
+
   return className;
 };
 
@@ -38,7 +40,7 @@ const decrementReference = (poll, className) => {
  * @param {Array}  classes      The list of classes to be tracked.
  */
 const trackClass = (classListRef, poll, classes) => {
-  classes.forEach(className => {
+  classes.forEach((className) => {
     incrementReference(poll, className);
     classListRef.add(className);
   });
@@ -52,7 +54,7 @@ const trackClass = (classListRef, poll, classes) => {
  * @param {Array}  classes      The list of classes to be untracked.
  */
 const untrackClass = (classListRef, poll, classes) => {
-  classes.forEach(className => {
+  classes.forEach((className) => {
     decrementReference(poll, className);
     // eslint-disable-next-line no-unused-expressions
     poll[className] === 0 && classListRef.remove(className);

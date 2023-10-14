@@ -1,19 +1,18 @@
 import findTabbable from './tabbable';
-
 const focusLaterElements = [];
 let modalElement = null;
 let needToFocus = false;
-
 export function handleBlur() {
   needToFocus = true;
 }
-
 export function handleFocus() {
   if (needToFocus) {
     needToFocus = false;
+
     if (!modalElement) {
       return;
     }
+
     // need to see how jQuery shims document.on('focusin') so we don't need the
     // setTimeout, firefox doesn't support focusin, if it did, we could focus
     // the element outside of a setTimeout. Side-effect of this implementation
@@ -23,12 +22,12 @@ export function handleFocus() {
       if (modalElement.contains(document.activeElement)) {
         return;
       }
+
       const el = findTabbable(modalElement)[0] || modalElement;
       el.focus();
     }, 0);
   }
 }
-
 export function markForFocusLater() {
   focusLaterElements.push(document.activeElement);
 }
@@ -36,11 +35,13 @@ export function markForFocusLater() {
 /* eslint-disable no-console */
 export function returnFocus() {
   let toFocus = null;
+
   try {
     if (focusLaterElements.length !== 0) {
       toFocus = focusLaterElements.pop();
       toFocus.focus();
     }
+
     return;
   } catch (e) {
     console.warn(
@@ -52,14 +53,15 @@ export function returnFocus() {
     );
   }
 }
-/* eslint-enable no-console */
 
+/* eslint-enable no-console */
 export function popWithoutFocus() {
   // eslint-disable-next-line no-unused-expressions
   focusLaterElements.length > 0 && focusLaterElements.pop();
 }
+export function setupScopedFocus(element?: HTMLElement) {
+  if (!element) return;
 
-export function setupScopedFocus(element) {
   modalElement = element;
 
   if (window.addEventListener) {
@@ -70,7 +72,6 @@ export function setupScopedFocus(element) {
     document.attachEvent('onFocus', handleFocus);
   }
 }
-
 export function teardownScopedFocus() {
   modalElement = null;
 

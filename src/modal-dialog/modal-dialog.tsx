@@ -1,4 +1,3 @@
-// @flow
 import React, { memo, useState, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 // eslint-disable-next-line import/no-cycle
@@ -6,17 +5,16 @@ import {
   MODAL_TYPES,
   Modal,
   modalService as defaultModalService
-} from '../modal.service.jsx';
+} from '../modal.service';
 import { getClassNames } from '../utils';
 import { BaseModal, CustomType, StandardType } from './components'; // eslint-disable-line import/no-cycle
-import './styles';
 
+import './styles';
 const defaultBackdropStyle = {
   overlay: {
     backgroundColor: ''
   }
 };
-
 const noBackdropStyle = {
   overlay: {
     backgroundColor: 'transparent',
@@ -25,20 +23,17 @@ const noBackdropStyle = {
   }
 };
 
-const useModalsSubscription = modalService => {
+const useModalsSubscription = (modalService) => {
   const [modals, setModals] = useState([]);
-
   useEffect(() => {
     const unsubscribe = modalService.subscribe(
       // eslint-disable-next-line no-shadow
-      ({ modals }: {| modals: Array<Modal> |}) => {
+      ({ modals }: { modals: Array<Modal> }) => {
         setModals(modals);
       }
     );
-
     return unsubscribe;
   }, [modalService]);
-
   return modals;
 };
 
@@ -47,13 +42,19 @@ export const ModalDialog = memo(
   ({ hasSpecificMountRoot, modalService = defaultModalService }) => {
     // eslint-disable-next-line no-underscore-dangle
     const cn = getClassNames(modalService._baseClassNames);
+
     const dismiss = (id: number) => {
-      modalService.dismiss({ id });
+      modalService.dismiss({
+        id
+      });
     };
+
     // eslint-disable-next-line no-underscore-dangle
     const closeDelayMs = modalService._getCloseDelayMs();
+
     const modals = useModalsSubscription(modalService);
     const baseModalMountRootRef = useRef();
+
     const getBaseModalMountRoot = () => {
       if (hasSpecificMountRoot) {
         return baseModalMountRootRef.current;
@@ -61,13 +62,13 @@ export const ModalDialog = memo(
 
       return document.body;
     };
-    const renderDefaultModalFrame = modal => (
+
+    const renderDefaultModalFrame = (modal) => (
       <div className={cn.modalContent}>
         <button
           type="button"
           className={cn.close}
-          onClick={() => dismiss(modal.id)}
-        >
+          onClick={() => dismiss(modal.id)}>
           &times;
         </button>
         <div className={cn.modalHeader}>
@@ -84,7 +85,7 @@ export const ModalDialog = memo(
 
     return (
       <>
-        {modals.map(modal => (
+        {modals.map((modal) => (
           <BaseModal
             key={modal.id}
             isOpen={modal.isOpen}
@@ -97,8 +98,7 @@ export const ModalDialog = memo(
             ariaHideApp={false}
             parentSelector={getBaseModalMountRoot}
             disableInlineStyles={modalService._disableInlineStyles} // eslint-disable-line no-underscore-dangle
-            cn={cn}
-          >
+            cn={cn}>
             <TransitionGroup>
               {modal.isOpen && (
                 <CSSTransition
@@ -107,17 +107,16 @@ export const ModalDialog = memo(
                   timeout={closeDelayMs}
                   classNames={cn.modalShow}
                   mountOnEnter
-                  unmountOnExit
-                >
+                  unmountOnExit>
                   {modal.component
                     ? modal.component({
-                        closeModal: reason => {
+                        closeModal: (reason) => {
                           modalService.close({
                             id: modal.id,
                             reason
                           });
                         },
-                        dismissModal: reason => {
+                        dismissModal: (reason) => {
                           modalService.dismiss({
                             id: modal.id,
                             reason

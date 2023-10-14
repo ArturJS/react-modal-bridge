@@ -1,5 +1,4 @@
 let globalElement = null;
-
 export function assertNodeList(nodeList, selector) {
   if (!nodeList || !nodeList.length) {
     throw new Error(
@@ -7,22 +6,18 @@ export function assertNodeList(nodeList, selector) {
     );
   }
 }
-
 export function setElement(element) {
   let useElement = element;
 
   if (typeof useElement === 'string') {
     const el = document.querySelectorAll(useElement);
-
     assertNodeList(el, useElement);
     useElement = 'length' in el ? el[0] : el;
   }
 
   globalElement = useElement || globalElement;
-
   return globalElement;
 }
-
 export function validateElement(appElement) {
   if (!appElement && !globalElement) {
     // eslint-disable-next-line no-console
@@ -36,19 +31,16 @@ export function validateElement(appElement) {
         'by setting `ariaHideApp={false}`.'
       ].join(' ')
     );
-
     return false;
   }
 
   return true;
 }
-
 export function hide(appElement) {
   if (validateElement(appElement)) {
     (appElement || globalElement).setAttribute('aria-hidden', 'true');
   }
 }
-
 export function show(appElement) {
   if (validateElement(appElement)) {
     (appElement || globalElement).removeAttribute('aria-hidden');
